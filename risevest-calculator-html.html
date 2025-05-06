@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Risevest Savings Calculator</title>
+    <style>
+        /* Reset and base styles */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f9fafb;
+            color: #111827;
+            line-height: 1.5;
+            padding: 1rem;
+        }
+        
+        /* Container */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            padding: 1.5rem;
+        }
+        
+        /* Typography */
+        h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 1.5rem;
+        }
+        
+        h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+        
+        h3 {
+            font-size: 1rem;
+            font-weight: 500;
+            color: #4b5563;
+        }
+        
+        h4 {
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+        
+        p {
+            margin-top: 0.25rem;
+        }
+        
+        .text-sm {
+            font-size: 0.875rem;
+        }
+        
+        .text-gray {
+            color: #6b7280;
+        }
+        
+        .font-bold {
+            font-weight: 700;
+        }
+        
+        /* Grid and layout */
+        .grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+        
+        .grid-2 {
+            grid-template-columns: 1fr 1fr;
+        }
+        
+        @media (max-width: 768px) {
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .space-y {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        /* Form elements */
+        .form-group {
+            margin-bottom: 0.75rem;
+        }
+        
+        label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.25rem;
+        }
+        
+        .input-group {
+            position: relative;
+        }
+        
+        input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+        
+        input:focus {
+            outline: none;
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+        }
+        
+        .input-suffix {
+            position: absolute;
+            right: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
+            font-size: 0.875rem;
+            pointer-events: none;
+        }
+        
+        /* Cards and panels */
+        .card {
+            background-color: #f3f4f6;
+            border-radius: 0.375rem;
+            padding: 1rem;
+        }
+        
+        .card-blue {
+            background-color: #eff6ff;
+        }
+        
+        .card-green {
+            background-color: #ecfdf5;
+        }
+        
+        .sub-card {
+            background-color: white;
+            border-radius: 0.25rem;
+            padding: 0.75rem;
+        }
+        
+        .mt-4 {
+            margin-top: 1rem;
+        }
+        
+        .mt-6 {
+            margin-top: 1.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Risevest Savings Calculator</h1>
+        
+        <div class="grid grid-2">
+            <!-- Rates Configuration -->
+            <div class="card">
+                <h2>Current Rates</h2>
+                
+                <div class="space-y">
+                    <div class="form-group">
+                        <label for="riseNairaDollarRate">Rise Naira to Dollar Rate</label>
+                        <div class="input-group">
+                            <input type="number" id="riseNairaDollarRate" value="1639">
+                            <span class="input-suffix">NGN/USD</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cryptoToNairaRate">Crypto to Naira Rate (Cenoa/Bybit)</label>
+                        <div class="input-group">
+                            <input type="number" id="cryptoToNairaRate" value="1597">
+                            <span class="input-suffix">NGN/USD</span>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cryptoDirectFeePercent">Direct Crypto Fee (%)</label>
+                        <div class="input-group">
+                            <input type="number" id="cryptoDirectFeePercent" value="1">
+                            <span class="input-suffix">%</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Your Amount -->
+            <div class="card">
+                <h2>Your Amount</h2>
+                
+                <div class="space-y">
+                    <div class="form-group">
+                        <label for="cryptoAmountUSD">Crypto Amount (USD value)</label>
+                        <div class="input-group">
+                            <input type="number" id="cryptoAmountUSD" value="100">
+                            <span class="input-suffix">USD</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Results -->
+        <div class="card card-blue mt-6">
+            <h2>Results</h2>
+            
+            <div>
+                <h3>Crypto Options Comparison</h3>
+                <div class="grid grid-2 mt-4">
+                    <div class="sub-card">
+                        <h4>Direct to Rise</h4>
+                        <p id="directResult">100 USD → 99.00 USD</p>
+                        <p class="text-sm text-gray">(after 1% fee)</p>
+                    </div>
+                    
+                    <div class="sub-card">
+                        <h4>Via Naira Conversion</h4>
+                        <p id="viaRiseResult">100 USD → 159,700 NGN → 97.44 USD</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card card-green mt-6">
+                <h3>Recommendation</h3>
+                <p id="recommendationText" class="mt-4 font-bold">Use Crypto directly with Rise</p>
+                <p id="savingsText" class="mt-4">You'll save approximately 1.56 USD with this option.</p>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Get all input elements
+        const riseNairaDollarRateInput = document.getElementById('riseNairaDollarRate');
+        const cryptoToNairaRateInput = document.getElementById('cryptoToNairaRate');
+        const cryptoDirectFeePercentInput = document.getElementById('cryptoDirectFeePercent');
+        const cryptoAmountUSDInput = document.getElementById('cryptoAmountUSD');
+        
+        // Get result elements
+        const directResultEl = document.getElementById('directResult');
+        const viaRiseResultEl = document.getElementById('viaRiseResult');
+        const recommendationTextEl = document.getElementById('recommendationText');
+        const savingsTextEl = document.getElementById('savingsText');
+        
+        // Function to format number with commas
+        function formatNumber(number) {
+            return new Intl.NumberFormat('en-NG').format(number);
+        }
+        
+        // Function to calculate and update results
+        function calculateResults() {
+            // Get input values
+            const riseNairaDollarRate = parseFloat(riseNairaDollarRateInput.value) || 0;
+            const cryptoToNairaRate = parseFloat(cryptoToNairaRateInput.value) || 0;
+            const cryptoDirectFeePercent = parseFloat(cryptoDirectFeePercentInput.value) || 0;
+            const cryptoAmountUSD = parseFloat(cryptoAmountUSDInput.value) || 0;
+            
+            // Option 1: Convert Crypto to Naira, then to Rise (USD)
+            const nairaFromCrypto = cryptoAmountUSD * cryptoToNairaRate;
+            const cryptoToNairaToRiseUSD = nairaFromCrypto / riseNairaDollarRate;
+            
+            // Option 2: Use Crypto directly with fee
+            const cryptoDirectToRiseUSD = cryptoAmountUSD * (1 - (cryptoDirectFeePercent / 100));
+            
+            // Update result text
+            directResultEl.textContent = `${cryptoAmountUSD} USD → ${cryptoDirectToRiseUSD.toFixed(2)} USD`;
+            viaRiseResultEl.textContent = `${cryptoAmountUSD} USD → ${formatNumber(nairaFromCrypto)} NGN → ${cryptoToNairaToRiseUSD.toFixed(2)} USD`;
+            
+            // Determine best option and savings
+            let bestOption, savings;
+            
+            if (cryptoToNairaToRiseUSD > cryptoDirectToRiseUSD) {
+                bestOption = 'Convert Crypto to Naira, then to Rise';
+                savings = cryptoToNairaToRiseUSD - cryptoDirectToRiseUSD;
+            } else {
+                bestOption = 'Use Crypto directly with Rise';
+                savings = cryptoDirectToRiseUSD - cryptoToNairaToRiseUSD;
+            }
+            
+            if (cryptoAmountUSD <= 0) {
+                bestOption = 'Please enter a crypto amount';
+                savings = 0;
+            }
+            
+            // Update recommendation and savings text
+            recommendationTextEl.textContent = bestOption;
+            
+            if (savings > 0) {
+                savingsTextEl.textContent = `You'll save approximately ${savings.toFixed(2)} USD with this option.`;
+                savingsTextEl.style.display = 'block';
+            } else {
+                savingsTextEl.style.display = 'none';
+            }
+        }
+        
+        // Add event listeners to all inputs
+        riseNairaDollarRateInput.addEventListener('input', calculateResults);
+        cryptoToNairaRateInput.addEventListener('input', calculateResults);
+        cryptoDirectFeePercentInput.addEventListener('input', calculateResults);
+        cryptoAmountUSDInput.addEventListener('input', calculateResults);
+        
+        // Calculate results on page load
+        calculateResults();
+    </script>
+</body>
+</html>
