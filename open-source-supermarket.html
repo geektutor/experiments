@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Open Source Career Shopping Cart | Daytona Developers Club</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            color: #333;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding: 25px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border-left: 4px solid #667eea;
+        }
+
+        .form-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input[type="text"],
+        input[type="number"],
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="number"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .radio-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .radio-option {
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .radio-option:hover {
+            background: #f0f0f0;
+        }
+
+        .radio-option input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .radio-option.selected {
+            border-color: #667eea;
+            background: #e8eaf6;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        #result {
+            display: none;
+            margin-top: 30px;
+            padding: 30px;
+            background: #e8f5e9;
+            border-radius: 12px;
+            border-left: 4px solid #4caf50;
+        }
+
+        #result h2 {
+            color: #2e7d32;
+            margin-bottom: 20px;
+        }
+
+        .strategy-card {
+            background: white;
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .strategy-card h3 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .strategy-card ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .strategy-card li {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .download-btns {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .download-btns button {
+            flex: 1;
+        }
+
+        .emoji {
+            font-size: 1.5em;
+            margin-right: 10px;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .download-btns {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🛒 Open Source Career Shopping Cart</h1>
+        <p class="subtitle">Build Your Strategic Contribution Plan in 5 Minutes</p>
+
+        <form id="careerForm">
+            <!-- Section 1: Career Goals -->
+            <div class="form-section">
+                <h2>📋 Step 1: Your Career Shopping List</h2>
+                
+                <div class="form-group">
+                    <label>What role are you targeting?</label>
+                    <select id="targetRole" required>
+                        <option value="">Select a role...</option>
+                        <option value="frontend">Frontend Developer</option>
+                        <option value="backend">Backend Developer</option>
+                        <option value="fullstack">Full Stack Developer</option>
+                        <option value="devrel">Developer Relations/Advocate</option>
+                        <option value="technical-writer">Technical Writer</option>
+                        <option value="pm">Product/Project Manager</option>
+                        <option value="devops">DevOps/Platform Engineer</option>
+                        <option value="mobile">Mobile Developer</option>
+                        <option value="data">Data Engineer/Scientist</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Primary skill you want to develop:</label>
+                    <input type="text" id="primarySkill" placeholder="e.g., React, Python, Technical Writing" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Technology/Framework you want to master:</label>
+                    <input type="text" id="technology" placeholder="e.g., Next.js, Django, Kubernetes" required>
+                </div>
+            </div>
+
+            <!-- Section 2: Budget -->
+            <div class="form-section">
+                <h2>💰 Step 2: Your Shopping Budget</h2>
+                
+                <div class="form-group">
+                    <label>Hours per week you can commit:</label>
+                    <input type="number" id="hoursPerWeek" min="1" max="40" placeholder="e.g., 5" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Your current skill level:</label>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="skillLevel" value="beginner" required>
+                            <span><strong>Beginner</strong> - Still learning the basics</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="skillLevel" value="intermediate">
+                            <span><strong>Intermediate</strong> - Can build projects independently</span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="skillLevel" value="advanced">
+                            <span><strong>Advanced</strong> - Deep expertise in my domain</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Type of work you enjoy most:</label>
+                    <select id="workType" required>
+                        <option value="">Select work type...</option>
+                        <option value="coding">Writing code and building features</option>
+                        <option value="writing">Writing documentation and tutorials</option>
+                        <option value="teaching">Teaching and mentoring others</option>
+                        <option value="organizing">Organizing and coordinating projects</option>
+                        <option value="designing">Designing user experiences</option>
+                        <option value="testing">Testing and quality assurance</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn">🎯 Generate My Shopping Strategy</button>
+        </form>
+
+        <div id="result">
+            <h2>🎉 Your Personalized Open Source Strategy</h2>
+            <div id="strategyContent"></div>
+            <div class="download-btns">
+                <button class="btn" onclick="downloadPDF()">📥 Download as PDF</button>
+                <button class="btn" onclick="downloadText()">📄 Download as Text</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Handle radio button styling
+        document.querySelectorAll('.radio-option').forEach(option => {
+            option.addEventListener('click', function() {
+                document.querySelectorAll('.radio-option').forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Strategy generator
+        const strategies = {
+            frontend: {
+                aisle: "Aisle 2: Bug Fixes & Feature Development",
+                projects: ["React", "Vue.js", "Tailwind CSS", "Vite", "Astro"],
+                firstSteps: [
+                    "Fix CSS/styling issues in component libraries",
+                    "Improve accessibility in UI components",
+                    "Add mobile responsiveness fixes",
+                    "Write tests for existing components"
+                ]
+            },
+            backend: {
+                aisle: "Aisle 3: Feature Development & Performance",
+                projects: ["Django", "Express.js", "FastAPI", "Laravel", "NestJS"],
+                firstSteps: [
+                    "Optimize database queries",
+                    "Add API endpoint documentation",
+                    "Implement caching strategies",
+                    "Write integration tests"
+                ]
+            },
+            fullstack: {
+                aisle: "Aisle 3: Feature Development (Full Stack)",
+                projects: ["Next.js", "Remix", "RedwoodJS", "Blitz.js", "SvelteKit"],
+                firstSteps: [
+                    "Build end-to-end features",
+                    "Improve developer experience",
+                    "Add authentication flows",
+                    "Create example applications"
+                ]
+            },
+            devrel: {
+                aisle: "Aisle 4: Community & Developer Relations",
+                projects: ["Dev.to", "Hashnode", "popular dev tools you use"],
+                firstSteps: [
+                    "Write beginner-friendly tutorials",
+                    "Create video walkthroughs",
+                    "Organize community events",
+                    "Improve onboarding documentation"
+                ]
+            },
+            "technical-writer": {
+                aisle: "Aisle 1: Documentation & Content",
+                projects: ["MDN Web Docs", "freeCodeCamp", "Docusaurus", "VuePress"],
+                firstSteps: [
+                    "Improve getting started guides",
+                    "Fix broken documentation links",
+                    "Add code examples",
+                    "Translate documentation"
+                ]
+            },
+            pm: {
+                aisle: "Aisle 5: Project Management & Operations",
+                projects: ["Linear", "Plane", "Jira alternatives", "project management tools"],
+                firstSteps: [
+                    "Improve issue templates",
+                    "Organize project roadmaps",
+                    "Facilitate community discussions",
+                    "Coordinate release planning"
+                ]
+            },
+            devops: {
+                aisle: "Aisle 3: Infrastructure & Automation",
+                projects: ["Kubernetes", "Terraform", "GitHub Actions", "Docker"],
+                firstSteps: [
+                    "Improve CI/CD pipelines",
+                    "Add monitoring and logging",
+                    "Optimize build processes",
+                    "Write infrastructure documentation"
+                ]
+            },
+            mobile: {
+                aisle: "Aisle 2 & 3: Bug Fixes & Feature Development",
+                projects: ["React Native", "Flutter", "Expo", "Ionic"],
+                firstSteps: [
+                    "Fix platform-specific bugs",
+                    "Improve performance on devices",
+                    "Add native module integrations",
+                    "Create example apps"
+                ]
+            },
+            data: {
+                aisle: "Aisle 3: Feature Development & Analysis",
+                projects: ["Pandas", "Jupyter", "Apache Spark", "DuckDB"],
+                firstSteps: [
+                    "Add new data processing functions",
+                    "Improve performance of algorithms",
+                    "Write example notebooks",
+                    "Create data visualization tools"
+                ]
+            }
+        };
+
+        document.getElementById('careerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const role = document.getElementById('targetRole').value;
+            const skill = document.getElementById('primarySkill').value;
+            const tech = document.getElementById('technology').value;
+            const hours = document.getElementById('hoursPerWeek').value;
+            const skillLevel = document.querySelector('input[name="skillLevel"]:checked').value;
+            const workType = document.getElementById('workType').value;
+
+            const strategy = strategies[role];
+            
+            let timeCommitment = '';
+            if (hours < 5) {
+                timeCommitment = 'Start with 1-2 small contributions per month';
+            } else if (hours < 10) {
+                timeCommitment = 'Aim for 1 contribution per week';
+            } else {
+                timeCommitment = 'Target 2-3 contributions per week';
+            }
+
+            const resultHTML = `
+                <div class="strategy-card">
+                    <h3><span class="emoji">🎯</span>Your Recommended Aisle</h3>
+                    <p><strong>${strategy.aisle}</strong></p>
+                    <p>Based on your goal to become a ${role.replace('-', ' ')} and develop ${skill} skills.</p>
+                </div>
+
+                <div class="strategy-card">
+                    <h3><span class="emoji">🛍️</span>Recommended Projects to Explore</h3>
+                    <ul>
+                        ${strategy.projects.map(p => `<li>${p}</li>`).join('')}
+                        <li>Plus: Any ${tech} related projects</li>
+                    </ul>
+                </div>
+
+                <div class="strategy-card">
+                    <h3><span class="emoji">✅</span>Your First 3 Contributions (Next 30 Days)</h3>
+                    <ul>
+                        ${strategy.firstSteps.slice(0, 3).map(s => `<li>${s}</li>`).join('')}
+                    </ul>
+                </div>
+
+                <div class="strategy-card">
+                    <h3><span class="emoji">⏰</span>Your Time Commitment</h3>
+                    <p><strong>${hours} hours/week</strong> - ${timeCommitment}</p>
+                    <p style="margin-top: 10px; color: #666;">As a <strong>${skillLevel}</strong> developer, focus on consistent small wins to build momentum.</p>
+                </div>
+
+                <div class="strategy-card">
+                    <h3><span class="emoji">🚀</span>Action Steps This Week</h3>
+                    <ol style="margin-left: 20px; margin-top: 10px;">
+                        <li style="margin: 10px 0;">Pick ONE project from the recommended list</li>
+                        <li style="margin: 10px 0;">Read their CONTRIBUTING.md file</li>
+                        <li style="margin: 10px 0;">Join their Discord/Slack community</li>
+                        <li style="margin: 10px 0;">Look for "good first issue" labels</li>
+                        <li style="margin: 10px 0;">Make your first contribution within 14 days!</li>
+                    </ol>
+                </div>
+            `;
+
+            document.getElementById('strategyContent').innerHTML = resultHTML;
+            document.getElementById('result').style.display = 'block';
+            document.getElementById('result').scrollIntoView({ behavior: 'smooth' });
+        });
+
+        function downloadText() {
+            const content = document.getElementById('strategyContent').innerText;
+            const blob = new Blob([`OPEN SOURCE CAREER SHOPPING STRATEGY
+Generated from Daytona Developers Club Tour '25
+
+${content}
+
+---
+Remember: Your first contribution is just the beginning. 
+Stay consistent, build relationships, and watch your career transform!
+
+Visit: daytona.io for more resources
+`], { type: 'text/plain' });
+            
+            const url = window.URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'my-opensource-strategy.txt';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            window.URL.revokeObjectURL(url);
+        }
+
+        function downloadPDF() {
+            window.print();
+        }
+    </script>
+</body>
+</html>
