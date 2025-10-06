@@ -41,6 +41,20 @@
             margin-bottom: 30px;
         }
 
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 1.8em;
+            }
+
+            .user-info {
+                grid-template-columns: 1fr;
+            }
+        }
+
         .input-group {
             display: flex;
             flex-direction: column;
@@ -77,6 +91,16 @@
             grid-template-columns: 2fr 1fr auto;
             gap: 15px;
             align-items: end;
+        }
+
+        @media (max-width: 768px) {
+            .asset-inputs {
+                grid-template-columns: 1fr;
+            }
+
+            .asset-inputs button {
+                width: 100%;
+            }
         }
 
         button {
@@ -126,6 +150,28 @@
             margin-bottom: 10px;
         }
 
+        @media (max-width: 768px) {
+            .asset-item {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 10px;
+            }
+
+            .asset-info {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+            }
+
+            .asset-value {
+                margin-left: 10px !important;
+            }
+
+            .delete-btn {
+                width: 100%;
+            }
+        }
+
         .asset-info {
             flex: 1;
         }
@@ -171,6 +217,12 @@
         .total-amount {
             font-size: 36px;
             font-weight: 700;
+        }
+
+        @media (max-width: 768px) {
+            .total-amount {
+                font-size: 28px;
+            }
         }
 
         .empty-state {
