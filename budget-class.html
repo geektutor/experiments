@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Budget Workshop - Financial Roundtable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8DDD3 0%, #D4C5B9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6B5B54 0%, #8B7968 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .timer-section {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+        }
+
+        .timer {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #6B5B54;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer.warning {
+            color: #FF9800;
+        }
+
+        .timer.urgent {
+            color: #F44336;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .timer-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .start-btn {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .start-btn:hover {
+            background: #45a049;
+        }
+
+        .pause-btn {
+            background: #FF9800;
+            color: white;
+        }
+
+        .pause-btn:hover {
+            background: #e68900;
+        }
+
+        .reset-btn {
+            background: #F44336;
+            color: white;
+        }
+
+        .reset-btn:hover {
+            background: #da190b;
+        }
+
+        .instructions {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-left: 5px solid #6B5B54;
+        }
+
+        .instructions h2 {
+            color: #6B5B54;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+        }
+
+        .instructions ol {
+            margin-left: 20px;
+        }
+
+        .instructions li {
+            margin-bottom: 8px;
+            color: #4A4A4A;
+        }
+
+        .scenarios-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .scenario-card {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .scenario-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        .scenario-header {
+            padding: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .scenario-1 .scenario-header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .scenario-2 .scenario-header {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+
+        .scenario-3 .scenario-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        .scenario-4 .scenario-header {
+            background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%);
+        }
+
+        .scenario-header h3 {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+        }
+
+        .scenario-header .income {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-top: 10px;
+        }
+
+        .scenario-content {
+            padding: 25px;
+        }
+
+        .context {
+            background: #F5F1ED;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #6B5B54;
+        }
+
+        .context h4 {
+            color: #6B5B54;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .context ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .context li {
+            padding: 4px 0;
+            color: #4A4A4A;
+            font-size: 0.95rem;
+        }
+
+        .context li:before {
+            content: "▪ ";
+            color: #6B5B54;
+            font-weight: bold;
+        }
+
+        .expenses {
+            margin-bottom: 20px;
+        }
+
+        .expenses h4 {
+            color: #6B5B54;
+            margin-bottom: 12px;
+            font-size: 1rem;
+        }
+
+        .expense-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 12px;
+            margin-bottom: 6px;
+            background: #FAFAF8;
+            border-radius: 6px;
+            border-left: 3px solid #E8DDD3;
+            transition: all 0.2s ease;
+        }
+
+        .expense-item:hover {
+            background: #F5F1ED;
+            border-left-color: #6B5B54;
+        }
+
+        .expense-name {
+            color: #4A4A4A;
+            font-size: 0.95rem;
+        }
+
+        .expense-amount {
+            color: #6B5B54;
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .challenge {
+            background: #FFF3E0;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 4px solid #FF9800;
+        }
+
+        .challenge h4 {
+            color: #E65100;
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .challenge p {
+            color: #4A4A4A;
+            font-size: 0.95rem;
+        }
+
+        .worksheet-section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .worksheet-section h2 {
+            color: #6B5B54;
+            margin-bottom: 20px;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+
+        .budget-calculator {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .calc-row {
+            display: grid;
+            grid-template-columns: 1fr 120px;
+            gap: 15px;
+            margin-bottom: 12px;
+            align-items: center;
+        }
+
+        .calc-row label {
+            color: #4A4A4A;
+            font-weight: 600;
+        }
+
+        .calc-row input {
+            padding: 10px;
+            border: 2px solid #E8DDD3;
+            border-radius: 6px;
+            font-size: 1rem;
+            text-align: right;
+            transition: border-color 0.3s ease;
+        }
+
+        .calc-row input:focus {
+            outline: none;
+            border-color: #6B5B54;
+        }
+
+        .category-section {
+            background: #F5F1ED;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .category-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #D4C5B9;
+        }
+
+        .category-header h3 {
+            color: #6B5B54;
+            font-size: 1.2rem;
+        }
+
+        .category-target {
+            font-size: 1rem;
+            color: #8B7968;
+            font-weight: 600;
+        }
+
+        .category-total {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: #6B5B54;
+            margin-top: 15px;
+        }
+
+        .category-total.over-budget {
+            background: #FFEBEE;
+            color: #F44336;
+        }
+
+        .category-total.under-budget {
+            background: #E8F5E9;
+            color: #4CAF50;
+        }
+
+        .summary-section {
+            background: linear-gradient(135deg, #6B5B54 0%, #8B7968 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 30px;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .summary-item {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 15px;
+            border-radius: 6px;
+            text-align: center;
+        }
+
+        .summary-item h4 {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            opacity: 0.9;
+        }
+
+        .summary-item .amount {
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 30px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #6B5B54;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5a4a44;
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #6B5B54;
+            border: 2px solid #6B5B54;
+        }
+
+        .btn-secondary:hover {
+            background: #F5F1ED;
+        }
+
+        .facilitator-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            border-top: 4px solid #6B5B54;
+        }
+
+        .facilitator-panel h3 {
+            color: #6B5B54;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .facilitator-tips {
+            background: #F5F1ED;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .facilitator-tips h4 {
+            color: #6B5B54;
+            margin-bottom: 10px;
+            font-size: 1rem;
+        }
+
+        .facilitator-tips ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .facilitator-tips li {
+            padding: 6px 0;
+            color: #4A4A4A;
+            font-size: 0.95rem;
+        }
+
+        .facilitator-tips li:before {
+            content: "💡 ";
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .timer {
+                font-size: 2.5rem;
+            }
+
+            .scenarios-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .calc-row {
+                grid-template-columns: 1fr;
+            }
+
+            .calc-row input {
+                text-align: left;
+            }
+
+            .summary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .tab-container {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+
+        .tabs {
+            display: flex;
+            background: #F5F1ED;
+            overflow-x: auto;
+        }
+
+        .tab {
+            flex: 1;
+            padding: 15px 20px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #6B5B54;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            min-width: 150px;
+        }
+
+        .tab:hover {
+            background: rgba(107, 91, 84, 0.1);
+        }
+
+        .tab.active {
+            background: white;
+            border-bottom-color: #6B5B54;
+        }
+
+        .tab-content {
+            padding: 30px;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .alert-success {
+            background: #E8F5E9;
+            color: #2E7D32;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .alert-warning {
+            background: #FFF3E0;
+            color: #E65100;
+            border-left: 4px solid #FF9800;
+        }
+
+        .alert-danger {
+            background: #FFEBEE;
+            color: #C62828;
+            border-left: 4px solid #F44336;
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 Budget Workshop</h1>
+            <p>Financial Roundtable 2024 - Virtual Session</p>
+        </div>
+
+        <!-- Timer Section -->
+        <div class="timer-section">
+            <h3>Workshop Timer</h3>
+            <div class="timer" id="timer">12:00</div>
+            <div class="timer-controls">
+                <button class="timer-btn start-btn" onclick="startTimer()">▶ Start</button>
+                <button class="timer-btn pause-btn" onclick="pauseTimer()">⏸ Pause</button>
+                <button class="timer-btn reset-btn" onclick="resetTimer()">↻ Reset</button>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tab-container">
+            <div class="tabs">
+                <button class="tab active" onclick="openTab('instructions')">📋 Instructions</button>
+                <button class="tab" onclick="openTab('scenarios')">👥 Scenarios</button>
+                <button class="tab" onclick="openTab('calculator')">🧮 Calculator</button>
+                <button class="tab" onclick="openTab('facilitator')">🎯 Facilitator Guide</button>
+            </div>
+
+            <div class="tab-content">
+                <!-- Instructions Tab -->
+                <div id="instructions" class="tab-pane active">
+                    <h2>How This Works</h2>
+                    <ol>
+                        <li><strong>Choose Your Scenario:</strong> Each breakout room will be assigned one of four budget scenarios</li>
+                        <li><strong>Review the Details:</strong> Read through the income, expenses, context, and challenge for your scenario</li>
+                        <li><strong>Create a Budget:</strong> Use the 50/30/20 Rule:
+                            <ul style="margin-top: 10px; margin-left: 20px;">
+                                <li><strong>50% Needs</strong> - Housing, food, transportation, utilities</li>
+                                <li><strong>30% Wants</strong> - Entertainment, dining out, hobbies</li>
+                                <li><strong>20% Savings & Debt</strong> - Emergency fund, investments, extra payments</li>
+                            </ul>
+                        </li>
+                        <li><strong>Use the Calculator:</strong> Go to the Calculator tab to input expenses and track your budget</li>
+                        <li><strong>Answer the Challenge:</strong> Each scenario has a specific financial goal to achieve</li>
+                        <li><strong>Present Your Solution:</strong> Be ready to share your budget breakdown and reasoning</li>
+                    </ol>
+
+                    <div class="alert alert-warning" style="margin-top: 20px;">
+                        <strong>⏰ Time Limit:</strong> You have 12 minutes to complete your budget. The timer is running at the top of the page!
+                    </div>
+                </div>
+
+                <!-- Scenarios Tab -->
+                <div id="scenarios" class="tab-pane">
+                    <div class="scenarios-grid">
+                        <!-- Scenario 1 -->
+                        <div class="scenario-card scenario-1">
+                            <div class="scenario-header">
+                                <h3>📱 Scenario 1</h3>
+                                <p>Young Professional</p>
+                                <div class="income">₦180,000/month</div>
+                            </div>
+                            <div class="scenario-content">
+                                <div class="context">
+                                    <h4>Context</h4>
+                                    <ul>
+                                        <li>26 years old, single</li>
+                                        <li>Lives in Lagos</li>
+                                        <li>No debt</li>
+                                        <li>No emergency fund yet</li>
+                                    </ul>
+                                </div>
+
+                                <div class="expenses">
+                                    <h4>Current Expenses</h4>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Rent (shared)</span>
+                                        <span class="expense-amount">₦60,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Transportation</span>
+                                        <span class="expense-amount">₦20,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Food</span>
+                                        <span class="expense-amount">₦50,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Phone/Data</span>
+                                        <span class="expense-amount">₦5,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Entertainment</span>
+                                        <span class="expense-amount">₦15,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Gym membership</span>
+                                        <span class="expense-amount">₦8,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Clothes/personal</span>
+                                        <span class="expense-amount">₦12,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Savings</span>
+                                        <span class="expense-amount">₦10,000</span>
+                                    </div>
+                                </div>
+
+                                <div class="challenge">
+                                    <h4>🎯 Challenge</h4>
+                                    <p>This person wants to save ₦30,000/month for an emergency fund. What needs to change?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scenario 2 -->
+                        <div class="scenario-card scenario-2">
+                            <div class="scenario-header">
+                                <h3>🚗 Scenario 2</h3>
+                                <p>Mid-Career with Debt</p>
+                                <div class="income">₦350,000/month</div>
+                            </div>
+                            <div class="scenario-content">
+                                <div class="context">
+                                    <h4>Context</h4>
+                                    <ul>
+                                        <li>34 years old, single</li>
+                                        <li>₦450,000 credit card debt (18% interest)</li>
+                                        <li>No emergency fund</li>
+                                        <li>Supporting aging parents</li>
+                                    </ul>
+                                </div>
+
+                                <div class="expenses">
+                                    <h4>Current Expenses</h4>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Rent (1-bedroom)</span>
+                                        <span class="expense-amount">₦120,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Car payment</span>
+                                        <span class="expense-amount">₦45,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Fuel</span>
+                                        <span class="expense-amount">₦30,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Food</span>
+                                        <span class="expense-amount">₦75,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Utilities</span>
+                                        <span class="expense-amount">₦15,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Cable/Streaming</span>
+                                        <span class="expense-amount">₦8,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Shopping</span>
+                                        <span class="expense-amount">₦30,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Credit card minimum</span>
+                                        <span class="expense-amount">₦20,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Family support</span>
+                                        <span class="expense-amount">₦15,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Savings</span>
+                                        <span class="expense-amount">₦0</span>
+                                    </div>
+                                </div>
+
+                                <div class="challenge">
+                                    <h4>🎯 Challenge</h4>
+                                    <p>Living paycheck to paycheck. How do you free up money for both emergency fund AND aggressive debt payoff?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scenario 3 -->
+                        <div class="scenario-card scenario-3">
+                            <div class="scenario-header">
+                                <h3>💼 Scenario 3</h3>
+                                <p>Entry-Level Hustler</p>
+                                <div class="income">₦120,000/month</div>
+                            </div>
+                            <div class="scenario-content">
+                                <div class="context">
+                                    <h4>Context</h4>
+                                    <ul>
+                                        <li>23 years old, recent graduate</li>
+                                        <li>₦95K job + ₦25K side hustle</li>
+                                        <li>No debt</li>
+                                        <li>Dreams of starting business</li>
+                                    </ul>
+                                </div>
+
+                                <div class="expenses">
+                                    <h4>Current Expenses</h4>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Rent (shared room)</span>
+                                        <span class="expense-amount">₦35,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Transportation</span>
+                                        <span class="expense-amount">₦12,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Food</span>
+                                        <span class="expense-amount">₦30,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Phone/Data</span>
+                                        <span class="expense-amount">₦5,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Church/Tithe</span>
+                                        <span class="expense-amount">₦12,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Family support</span>
+                                        <span class="expense-amount">₦15,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Entertainment</span>
+                                        <span class="expense-amount">₦8,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Side hustle expenses</span>
+                                        <span class="expense-amount">₦5,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Savings</span>
+                                        <span class="expense-amount">₦0</span>
+                                    </div>
+                                </div>
+
+                                <div class="challenge">
+                                    <h4>🎯 Challenge</h4>
+                                    <p>Wants to save ₦50,000 in 6 months for business capital. Is it possible? What's the plan?</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Scenario 4 -->
+                        <div class="scenario-card scenario-4">
+                            <div class="scenario-header">
+                                <h3>👨‍👩‍👧 Scenario 4</h3>
+                                <p>Family Person</p>
+                                <div class="income">₦450,000/month</div>
+                            </div>
+                            <div class="scenario-content">
+                                <div class="context">
+                                    <h4>Context</h4>
+                                    <ul>
+                                        <li>38 years old, married with 1 child</li>
+                                        <li>Spouse contributes separately</li>
+                                        <li>Small emergency fund exists</li>
+                                        <li>Worried about child's education</li>
+                                    </ul>
+                                </div>
+
+                                <div class="expenses">
+                                    <h4>Current Expenses</h4>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Rent (2-bedroom)</span>
+                                        <span class="expense-amount">₦150,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Transportation</span>
+                                        <span class="expense-amount">₦40,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Food (family of 3)</span>
+                                        <span class="expense-amount">₦80,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">School fees</span>
+                                        <span class="expense-amount">₦60,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Utilities</span>
+                                        <span class="expense-amount">₦20,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">House help</span>
+                                        <span class="expense-amount">₦25,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Entertainment/outings</span>
+                                        <span class="expense-amount">₦20,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Clothing/kids' needs</span>
+                                        <span class="expense-amount">₦25,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Healthcare</span>
+                                        <span class="expense-amount">₦15,000</span>
+                                    </div>
+                                    <div class="expense-item">
+                                        <span class="expense-name">Savings/Insurance</span>
+                                        <span class="expense-amount">₦15,000</span>
+                                    </div>
+                                </div>
+
+                                <div class="challenge">
+                                    <h4>🎯 Challenge</h4>
+                                    <p>How do you balance current family needs with saving for future university fees (₦2M needed in 10 years)?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Calculator Tab -->
+                <div id="calculator" class="tab-pane">
+                    <h2>Budget Calculator</h2>
+                    
+                    <div class="budget-calculator">
+                        <div class="calc-row">
+                            <label for="income">Monthly Income:</label>
+                            <input type="number" id="income" placeholder="0" oninput="calculateBudget()">
+                        </div>
+
+                        <div class="alert alert-warning" id="income-alert" style="display: none;">
+                            Please enter monthly income to begin
+                        </div>
+
+                        <!-- Needs Section -->
+                        <div class="category-section" id="needs-section">
+                            <div class="category-header">
+                                <h3>🏠 NEEDS (50%)</h3>
+                                <span class="category-target" id="needs-target">Target: ₦0</span>
+                            </div>
+
+                            <div class="calc-row">
+                                <label>Rent/Housing:</label>
+                                <input type="number" class="needs-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Transportation:</label>
+                                <input type="number" class="needs-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Food (Groceries):</label>
+                                <input type="number" class="needs-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Utilities:</label>
+                                <input type="number" class="needs-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Phone/Data:</label>
+                                <input type="number" class="needs-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Healthcare:</label>
+                                <input type="number" class="needs-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Minimum Debt Payments:</label>
+                                <input type="number" class="needs-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Other Need:</label>
+                                <input type="number" class="needs-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+
+                            <div class="category-total" id="needs-total">
+                                Total Needs: ₦0 (0%)
+                            </div>
+                        </div>
+
+                        <!-- Wants Section -->
+                        <div class="category-section" id="wants-section">
+                            <div class="category-header">
+                                <h3>🎉 WANTS (30%)</h3>
+                                <span class="category-target" id="wants-target">Target: ₦0</span>
+                            </div>
+
+                            <div class="calc-row">
+                                <label>Eating Out/Dining:</label>
+                                <input type="number" class="wants-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Entertainment:</label>
+                                <input type="number" class="wants-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Gym/Fitness:</label>
+                                <input type="number" class="wants-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Subscriptions (Cable, Netflix, etc):</label>
+                                <input type="number" class="wants-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Shopping/Clothes:</label>
+                                <input type="number" class="wants-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Hobbies:</label>
+                                <input type="number" class="wants-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Other Want:</label>
+                                <input type="number" class="wants-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+
+                            <div class="category-total" id="wants-total">
+                                Total Wants: ₦0 (0%)
+                            </div>
+                        </div>
+
+                        <!-- Savings & Debt Section -->
+                        <div class="category-section" id="savings-section">
+                            <div class="category-header">
+                                <h3>💰 SAVINGS & DEBT (20%)</h3>
+                                <span class="category-target" id="savings-target">Target: ₦0</span>
+                            </div>
+
+                            <div class="calc-row">
+                                <label>Emergency Fund:</label>
+                                <input type="number" class="savings-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Investments:</label>
+                                <input type="number" class="savings-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Extra Debt Payments:</label>
+                                <input type="number" class="savings-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Retirement/Pension:</label>
+                                <input type="number" class="savings-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+                            <div class="calc-row">
+                                <label>Other Savings Goal:</label>
+                                <input type="number" class="savings-input" placeholder="0" oninput="calculateBudget()">
+                            </div>
+
+                            <div class="category-total" id="savings-total">
+                                Total Savings/Debt: ₦0 (0%)
+                            </div>
+                        </div>
+
+                        <!-- Summary Section -->
+                        <div class="summary-section">
+                            <h3 style="margin-bottom: 10px;">Budget Summary</h3>
+                            <div class="summary-grid">
+                                <div class="summary-item">
+                                    <h4>Monthly Income</h4>
+                                    <div class="amount" id="summary-income">₦0</div>
+                                </div>
+                                <div class="summary-item">
+                                    <h4>Total Expenses</h4>
+                                    <div class="amount" id="summary-expenses">₦0</div>
+                                </div>
+                                <div class="summary-item">
+                                    <h4>Remaining/Surplus</h4>
+                                    <div class="amount" id="summary-remaining">₦0</div>
+                                </div>
+                            </div>
+
+                            <div id="budget-feedback" style="margin-top: 20px; padding: 15px; background: rgba(255,255,255,0.2); border-radius: 6px; text-align: center;">
+                            </div>
+                        </div>
+
+                        <div class="btn-group">
+                            <button class="btn btn-primary" onclick="printBudget()">📄 Print Budget</button>
+                            <button class="btn btn-secondary" onclick="resetCalculator()">🔄 Reset Calculator</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Facilitator Tab -->
+                <div id="facilitator" class="tab-pane">
+                    <div class="facilitator-panel">
+                        <h3>🎯 Facilitator Guide</h3>
+                        
+                        <div class="facilitator-tips">
+                            <h4>Questions to Ask (Not Tell)</h4>
+                            <ul>
+                                <li>"What makes that a NEED vs. a WANT?"</li>
+                                <li>"Could that expense be reduced without eliminating it?"</li>
+                                <li>"What would happen if you cut that completely?"</li>
+                                <li>"Where's the most room to adjust?"</li>
+                                <li>"Is this sustainable for 6 months?"</li>
+                                <li>"What's the opportunity cost of this expense?"</li>
+                            </ul>
+                        </div>
+
+                        <div class="facilitator-tips">
+                            <h4>Red Flags to Watch For</h4>
+                            <ul>
+                                <li>Math doesn't add up to 100% of income</li>
+                                <li>"Needs" category is 70%+ (probably miscategorized)</li>
+                                <li>Zero money allocated for savings/debt</li>
+                                <li>Unrealistic cuts ("Just stop eating out forever!")</li>
+                                <li>Ignoring the scenario's specific challenge</li>
+                            </ul>
+                        </div>
+
+                        <div class="facilitator-tips">
+                            <h4>Common Debate Topics</h4>
+                            <ul>
+                                <li><strong>Gym Membership:</strong> Need for mental health vs. Want for lifestyle?</li>
+                                <li><strong>Eating Out:</strong> Where's the line between social needs and indulgence?</li>
+                                <li><strong>Family Support:</strong> Obligation vs. enabling - how much is reasonable?</li>
+                                <li><strong>Tithe/Church:</strong> Personal values vs. financial pressure</li>
+                                <li><strong>Car vs. Public Transport:</strong> Convenience vs. cost</li>
+                            </ul>
+                        </div>
+
+                        <div class="facilitator-tips">
+                            <h4>Facilitation Techniques</h4>
+                            <ul>
+                                <li><strong>Silent Observation:</strong> Let the group struggle a bit before jumping in</li>
+                                <li><strong>Socratic Method:</strong> Answer questions with questions</li>
+                                <li><strong>Real Talk:</strong> Share your own money struggles to build trust</li>
+                                <li><strong>Challenge Assumptions:</strong> "Says who?" is a powerful question</li>
+                                <li><strong>Acknowledge Difficulty:</strong> "This is hard - you're doing great"</li>
+                            </ul>
+                        </div>
+
+                        <div class="alert alert-success" style="margin-top: 20px;">
+                            <strong>Remember:</strong> There's no ONE right answer. Different groups will budget differently based on their values and priorities. Your job is to make them THINK, not to give them the "correct" budget.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Timer functionality
+        let timeRemaining = 720; // 12 minutes in seconds
+        let timerInterval = null;
+        let isRunning = false;
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(timeRemaining / 60);
+            const seconds = timeRemaining % 60;
+            const display = `${minutes}:${seconds.toString().padStart(2, '0')}`;
+            document.getElementById('timer').textContent = display;
+
+            // Change color based on time remaining
+            const timerElement = document.getElementById('timer');
+            timerElement.classList.remove('warning', 'urgent');
+            
+            if (timeRemaining <= 120) { // 2 minutes
+                timerElement.classList.add('urgent');
+            } else if (timeRemaining <= 300) { // 5 minutes
+                timerElement.classList.add('warning');
+            }
+
+            if (timeRemaining === 0) {
+                pauseTimer();
+                alert('⏰ Time is up! Please wrap up your budget and prepare to present.');
+            }
+        }
+
+        function startTimer() {
+            if (!isRunning) {
+                isRunning = true;
+                timerInterval = setInterval(() => {
+                    if (timeRemaining > 0) {
+                        timeRemaining--;
+                        updateTimerDisplay();
+                    }
+                }, 1000);
+            }
+        }
+
+        function pauseTimer() {
+            isRunning = false;
+            if (timerInterval) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+        }
+
+        function resetTimer() {
+            pauseTimer();
+            timeRemaining = 720;
+            updateTimerDisplay();
+        }
+
+        // Tab functionality
+        function openTab(tabName) {
+            // Hide all tab panes
+            const panes = document.querySelectorAll('.tab-pane');
+            panes.forEach(pane => pane.classList.remove('active'));
+
+            // Remove active class from all tabs
+            const tabs = document.querySelectorAll('.tab');
+            tabs.forEach(tab => tab.classList.remove('active'));
+
+            // Show selected tab pane
+            document.getElementById(tabName).classList.add('active');
+
+            // Add active class to clicked tab
+            event.target.classList.add('active');
+        }
+
+        // Budget Calculator functionality
+        function calculateBudget() {
+            const income = parseFloat(document.getElementById('income').value) || 0;
+
+            if (income === 0) {
+                document.getElementById('income-alert').style.display = 'block';
+                return;
+            } else {
+                document.getElementById('income-alert').style.display = 'none';
+            }
+
+            // Calculate targets
+            const needsTarget = income * 0.5;
+            const wantsTarget = income * 0.3;
+            const savingsTarget = income * 0.2;
+
+            document.getElementById('needs-target').textContent = `Target: ₦${needsTarget.toLocaleString()}`;
+            document.getElementById('wants-target').textContent = `Target: ₦${wantsTarget.toLocaleString()}`;
+            document.getElementById('savings-target').textContent = `Target: ₦${savingsTarget.toLocaleString()}`;
+
+            // Calculate actual totals
+            let needsTotal = 0;
+            document.querySelectorAll('.needs-input').forEach(input => {
+                needsTotal += parseFloat(input.value) || 0;
+            });
+
+            let wantsTotal = 0;
+            document.querySelectorAll('.wants-input').forEach(input => {
+                wantsTotal += parseFloat(input.value) || 0;
+            });
+
+            let savingsTotal = 0;
+            document.querySelectorAll('.savings-input').forEach(input => {
+                savingsTotal += parseFloat(input.value) || 0;
+            });
+
+            // Calculate percentages
+            const needsPercent = income > 0 ? (needsTotal / income * 100).toFixed(1) : 0;
+            const wantsPercent = income > 0 ? (wantsTotal / income * 100).toFixed(1) : 0;
+            const savingsPercent = income > 0 ? (savingsTotal / income * 100).toFixed(1) : 0;
+
+            // Update display
+            const needsTotalElement = document.getElementById('needs-total');
+            needsTotalElement.textContent = `Total Needs: ₦${needsTotal.toLocaleString()} (${needsPercent}%)`;
+            needsTotalElement.className = 'category-total';
+            if (needsTotal > needsTarget) {
+                needsTotalElement.classList.add('over-budget');
+            } else if (needsTotal < needsTarget) {
+                needsTotalElement.classList.add('under-budget');
+            }
+
+            const wantsTotalElement = document.getElementById('wants-total');
+            wantsTotalElement.textContent = `Total Wants: ₦${wantsTotal.toLocaleString()} (${wantsPercent}%)`;
+            wantsTotalElement.className = 'category-total';
+            if (wantsTotal > wantsTarget) {
+                wantsTotalElement.classList.add('over-budget');
+            } else if (wantsTotal < wantsTarget) {
+                wantsTotalElement.classList.add('under-budget');
+            }
+
+            const savingsTotalElement = document.getElementById('savings-total');
+            savingsTotalElement.textContent = `Total Savings/Debt: ₦${savingsTotal.toLocaleString()} (${savingsPercent}%)`;
+            savingsTotalElement.className = 'category-total';
+            if (savingsTotal < savingsTarget) {
+                savingsTotalElement.classList.add('over-budget');
+            } else if (savingsTotal >= savingsTarget) {
+                savingsTotalElement.classList.add('under-budget');
+            }
+
+            // Update summary
+            const totalExpenses = needsTotal + wantsTotal + savingsTotal;
+            const remaining = income - totalExpenses;
+
+            document.getElementById('summary-income').textContent = `₦${income.toLocaleString()}`;
+            document.getElementById('summary-expenses').textContent = `₦${totalExpenses.toLocaleString()}`;
+            document.getElementById('summary-remaining').textContent = `₦${remaining.toLocaleString()}`;
+
+            // Provide feedback
+            const feedbackElement = document.getElementById('budget-feedback');
+            if (remaining > 0) {
+                feedbackElement.innerHTML = `<strong>✅ Great!</strong> You have ₦${remaining.toLocaleString()} left over. Consider adding it to savings!`;
+            } else if (remaining === 0) {
+                feedbackElement.innerHTML = `<strong>✨ Perfect!</strong> Your budget is perfectly balanced.`;
+            } else {
+                feedbackElement.innerHTML = `<strong>⚠️ Over Budget!</strong> You're ₦${Math.abs(remaining).toLocaleString()} over. Time to make some cuts.`;
+            }
+
+            // 50/30/20 adherence check
+            if (Math.abs(needsPercent - 50) <= 5 && Math.abs(wantsPercent - 30) <= 5 && Math.abs(savingsPercent - 20) <= 5) {
+                feedbackElement.innerHTML += `<br><br><strong>🎯 Excellent!</strong> You're within 5% of the 50/30/20 rule!`;
+            }
+        }
+
+        function resetCalculator() {
+            if (confirm('Are you sure you want to reset all values?')) {
+                document.querySelectorAll('input[type="number"]').forEach(input => {
+                    input.value = '';
+                });
+                calculateBudget();
+            }
+        }
+
+        function printBudget() {
+            window.print();
+        }
+
+        // Initialize
+        updateTimerDisplay();
+    </script>
+</body>
+</html>
