@@ -1,0 +1,935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Money Personality Quiz | Financial Roundtable</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #E8DDD3 0%, #D4C5B9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #6B5B54 0%, #8B7968 100%);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.95;
+        }
+
+        .brand {
+            font-size: 0.9rem;
+            margin-top: 15px;
+            opacity: 0.85;
+            font-style: italic;
+        }
+
+        .content {
+            padding: 40px 30px;
+        }
+
+        .instructions {
+            background: #F5F1ED;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+            border-left: 4px solid #6B5B54;
+        }
+
+        .instructions h3 {
+            color: #6B5B54;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+
+        .question-block {
+            margin-bottom: 35px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #E8DDD3;
+        }
+
+        .question-block:last-of-type {
+            border-bottom: none;
+        }
+
+        .question-number {
+            display: inline-block;
+            background: #6B5B54;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.15rem;
+            font-weight: 600;
+            color: #2C2C2C;
+            margin-bottom: 15px;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: flex-start;
+            padding: 15px;
+            border: 2px solid #E8DDD3;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: white;
+        }
+
+        .option:hover {
+            border-color: #8B7968;
+            background: #FAFAF8;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"] {
+            margin-right: 12px;
+            margin-top: 4px;
+            cursor: pointer;
+            width: 18px;
+            height: 18px;
+            accent-color: #6B5B54;
+        }
+
+        .option label {
+            cursor: pointer;
+            flex: 1;
+            color: #4A4A4A;
+            font-size: 1rem;
+        }
+
+        .option.selected {
+            border-color: #6B5B54;
+            background: #F5F1ED;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #6B5B54 0%, #8B7968 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 30px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(107, 91, 84, 0.4);
+        }
+
+        .submit-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results {
+            display: none;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .result-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .result-header h2 {
+            color: #6B5B54;
+            font-size: 2rem;
+            margin-bottom: 10px;
+        }
+
+        .personality-card {
+            background: linear-gradient(135deg, #6B5B54 0%, #8B7968 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .personality-name {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        .personality-subtitle {
+            font-size: 1.3rem;
+            opacity: 0.95;
+            margin-bottom: 20px;
+        }
+
+        .personality-description {
+            font-size: 1.1rem;
+            line-height: 1.8;
+            opacity: 0.9;
+        }
+
+        .strengths-weaknesses {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .strength-box,
+        .weakness-box {
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .strength-box {
+            background: #E8F5E9;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .weakness-box {
+            background: #FFF3E0;
+            border-left: 4px solid #FF9800;
+        }
+
+        .strength-box h4,
+        .weakness-box h4 {
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+
+        .strength-box h4 {
+            color: #2E7D32;
+        }
+
+        .weakness-box h4 {
+            color: #E65100;
+        }
+
+        .strength-box p,
+        .weakness-box p {
+            color: #4A4A4A;
+            line-height: 1.6;
+        }
+
+        .score-breakdown {
+            background: #F5F1ED;
+            padding: 25px;
+            border-radius: 8px;
+            margin-top: 25px;
+        }
+
+        .score-breakdown h3 {
+            color: #6B5B54;
+            margin-bottom: 15px;
+            font-size: 1.3rem;
+        }
+
+        .score-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+        }
+
+        .score-label {
+            font-weight: 600;
+            color: #4A4A4A;
+        }
+
+        .score-bar {
+            flex: 1;
+            height: 10px;
+            background: #E8DDD3;
+            border-radius: 5px;
+            margin: 0 15px;
+            overflow: hidden;
+        }
+
+        .score-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6B5B54 0%, #8B7968 100%);
+            border-radius: 5px;
+            transition: width 0.5s ease;
+        }
+
+        .score-value {
+            font-weight: 700;
+            color: #6B5B54;
+            min-width: 30px;
+            text-align: right;
+        }
+
+        .restart-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background: white;
+            color: #6B5B54;
+            border: 2px solid #6B5B54;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 20px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .restart-btn:hover {
+            background: #6B5B54;
+            color: white;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 6px;
+            background: #E8DDD3;
+            border-radius: 3px;
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #6B5B54 0%, #8B7968 100%);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            text-align: center;
+            color: #6B5B54;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 0.95rem;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.6rem;
+            }
+
+            .header p {
+                font-size: 1rem;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .strengths-weaknesses {
+                grid-template-columns: 1fr;
+            }
+
+            .personality-name {
+                font-size: 1.8rem;
+            }
+
+            .personality-subtitle {
+                font-size: 1.1rem;
+            }
+        }
+
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Money Personality Quiz</h1>
+            <p>Discover Your Financial Style</p>
+            <div class="brand">GeekTutor | Financial Roundtable 2025</div>
+        </div>
+
+        <div class="content">
+            <div id="quiz-section">
+                <div class="instructions">
+                    <h3>📋 Instructions</h3>
+                    <p>For each question, select the answer that most closely matches your typical behavior. Be honest - there are no right or wrong answers!</p>
+                </div>
+
+                <div class="progress-text">
+                    <span id="progress-counter">Question 0 of 10</span>
+                </div>
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progress-fill"></div>
+                </div>
+
+                <form id="quiz-form">
+                    <!-- Question 1 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 1</span>
+                        <div class="question-text">You just received an unexpected ₦50,000. Your first thought is:</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q1a" name="q1" value="A" required>
+                                <label for="q1a">Perfect! This goes straight into my savings account.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q1b" name="q1" value="B">
+                                <label for="q1b">Finally! I can get those shoes I've been eyeing and maybe a nice dinner out.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q1c" name="q1" value="C">
+                                <label for="q1c">Interesting. Let me research the best investment opportunity for this.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q1d" name="q1" value="D">
+                                <label for="q1d">Great! This will help cover the credit card bill that's due soon.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q1e" name="q1" value="E">
+                                <label for="q1e">I'll save ₦25,000 and use ₦25,000 for something I need.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 2 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 2</span>
+                        <div class="question-text">When you think about your financial future, you feel:</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q2a" name="q2" value="A" required>
+                                <label for="q2a">Secure and prepared - I have money set aside for emergencies.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q2b" name="q2" value="B">
+                                <label for="q2b">Optimistic - I'll figure it out when I get there.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q2c" name="q2" value="C">
+                                <label for="q2c">Excited - I'm building wealth through smart investments.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q2d" name="q2" value="D">
+                                <label for="q2d">Stressed - I'm worried about my debt situation.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q2e" name="q2" value="E">
+                                <label for="q2e">Confident but cautious - I have a balanced plan.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 3 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 3</span>
+                        <div class="question-text">How often do you check your bank account balance?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q3a" name="q3" value="A" required>
+                                <label for="q3a">Daily or multiple times per week - I like knowing exactly where I stand.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q3b" name="q3" value="B">
+                                <label for="q3b">Only when I need to spend money or when I'm running low.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q3c" name="q3" value="C">
+                                <label for="q3c">Weekly, to monitor my investment transfers and savings goals.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q3d" name="q3" value="D">
+                                <label for="q3d">Rarely - I'm afraid to look because I might be overdrawn.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q3e" name="q3" value="E">
+                                <label for="q3e">A few times per week to ensure I'm on track with my budget.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 4 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 4</span>
+                        <div class="question-text">Your approach to shopping is:</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q4a" name="q4" value="A" required>
+                                <label for="q4a">I make a list and stick to it. I compare prices and look for deals.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q4b" name="q4" value="B">
+                                <label for="q4b">If I like it and can afford it right now, I buy it. Life is short!</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q4c" name="q4" value="C">
+                                <label for="q4c">I only buy what I need so I can invest the rest.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q4d" name="q4" value="D">
+                                <label for="q4d">I often buy things on credit and worry about payment later.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q4e" name="q4" value="E">
+                                <label for="q4e">I budget for both needs and wants, then shop accordingly.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 5 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 5</span>
+                        <div class="question-text">When friends invite you out and you haven't budgeted for it:</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q5a" name="q5" value="A" required>
+                                <label for="q5a">I politely decline or suggest a free/cheaper alternative.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q5b" name="q5" value="B">
+                                <label for="q5b">I go anyway - I'll make it work somehow. FOMO is real!</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q5c" name="q5" value="C">
+                                <label for="q5c">I calculate if it's worth the opportunity cost of potential investment returns.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q5d" name="q5" value="D">
+                                <label for="q5d">I put it on my credit card and deal with it later.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q5e" name="q5" value="E">
+                                <label for="q5e">I check my budget - if I have flex money, I go; if not, I decline.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 6 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 6</span>
+                        <div class="question-text">Your biggest financial fear is:</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q6a" name="q6" value="A" required>
+                                <label for="q6a">Not having enough savings for an emergency.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q6b" name="q6" value="B">
+                                <label for="q6b">Missing out on experiences because I'm too focused on saving.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q6c" name="q6" value="C">
+                                <label for="q6c">Not growing my wealth fast enough or missing investment opportunities.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q6d" name="q6" value="D">
+                                <label for="q6d">Drowning in debt and never getting out.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q6e" name="q6" value="E">
+                                <label for="q6e">Not maintaining the right balance between enjoying today and securing tomorrow.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 7 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 7</span>
+                        <div class="question-text">How do you handle windfalls (bonuses, gifts)?</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q7a" name="q7" value="A" required>
+                                <label for="q7a">Save at least 80-90% of it immediately.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q7b" name="q7" value="B">
+                                <label for="q7b">Treat myself! I earned/deserved this.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q7c" name="q7" value="C">
+                                <label for="q7c">Invest it all or put it toward my investment goals.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q7d" name="q7" value="D">
+                                <label for="q7d">Pay off some debt, though I might spend a little too.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q7e" name="q7" value="E">
+                                <label for="q7e">Split it: some to savings, some to investments, some to enjoy.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 8 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 8</span>
+                        <div class="question-text">When you hear about a hot investment opportunity, you:</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q8a" name="q8" value="A" required>
+                                <label for="q8a">Feel skeptical and worried about losing my saved money.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q8b" name="q8" value="B">
+                                <label for="q8b">Get excited but probably won't follow through because it seems complicated.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q8c" name="q8" value="C">
+                                <label for="q8c">Do immediate research and assess if it fits my portfolio strategy.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q8d" name="q8" value="D">
+                                <label for="q8d">Wish I had money to invest, but I'm too deep in debt to consider it.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q8e" name="q8" value="E">
+                                <label for="q8e">Carefully evaluate it against my financial plan before deciding.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 9 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 9</span>
+                        <div class="question-text">Your wallet/purse currently has:</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q9a" name="q9" value="A" required>
+                                <label for="q9a">Just enough cash for planned expenses - I don't like carrying too much.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q9b" name="q9" value="B">
+                                <label for="q9b">Who knows? I spend without tracking and hope for the best.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q9c" name="q9" value="C">
+                                <label for="q9c">Minimal cash - most of my money is working for me in investments.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q9d" name="q9" value="D">
+                                <label for="q9d">Maybe nothing - I rely on cards and credit when I'm short.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q9e" name="q9" value="E">
+                                <label for="q9e">A reasonable amount based on my weekly budget allocation.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Question 10 -->
+                    <div class="question-block">
+                        <span class="question-number">Question 10</span>
+                        <div class="question-text">Complete this sentence: "Money is meant to be..."</div>
+                        <div class="options">
+                            <div class="option">
+                                <input type="radio" id="q10a" name="q10" value="A" required>
+                                <label for="q10a">Saved for security and peace of mind.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q10b" name="q10" value="B">
+                                <label for="q10b">Spent and enjoyed - you can't take it with you!</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q10c" name="q10" value="C">
+                                <label for="q10c">Invested and grown to build wealth.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q10d" name="q10" value="D">
+                                <label for="q10d">Something I struggle with - I never seem to have enough.</label>
+                            </div>
+                            <div class="option">
+                                <input type="radio" id="q10e" name="q10" value="E">
+                                <label for="q10e">Managed wisely to balance current needs with future goals.</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="submit-btn">Get My Results</button>
+                </form>
+            </div>
+
+            <div id="results-section" class="results">
+                <div class="result-header">
+                    <h2>Your Money Personality</h2>
+                </div>
+
+                <div class="personality-card">
+                    <div class="personality-name" id="personality-name"></div>
+                    <div class="personality-subtitle" id="personality-subtitle"></div>
+                    <div class="personality-description" id="personality-description"></div>
+                </div>
+
+                <div class="strengths-weaknesses">
+                    <div class="strength-box">
+                        <h4>💪 Strengths</h4>
+                        <p id="strengths-text"></p>
+                    </div>
+                    <div class="weakness-box">
+                        <h4>⚠️ Areas to Watch</h4>
+                        <p id="weaknesses-text"></p>
+                    </div>
+                </div>
+
+                <div class="score-breakdown">
+                    <h3>Your Score Breakdown</h3>
+                    <div id="score-items"></div>
+                </div>
+
+                <button class="restart-btn" onclick="restartQuiz()">Take Quiz Again</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Personality data
+        const personalities = {
+            A: {
+                name: "ARCAGON",
+                subtitle: "The Saver",
+                description: "You prioritize saving and feel secure knowing you have a financial cushion. You're comfortable with delayed gratification and are often budget-conscious.",
+                strengths: "Disciplined, excellent at budgeting, prepared for emergencies, financially secure mindset.",
+                weaknesses: "Might miss out on experiences due to over-frugality, may struggle to enjoy present moments."
+            },
+            B: {
+                name: "ASHAWO",
+                subtitle: "The Big Spender",
+                description: "You enjoy using your money on experiences and possessions. You may not be as focused on saving and might prioritize keeping up with the latest trends.",
+                strengths: "Enjoys life's luxuries, good at finding deals, lives in the moment, social and generous.",
+                weaknesses: "Prone to debt, may not save enough for long-term goals, impulse buying tendencies."
+            },
+            C: {
+                name: "ODOGWU",
+                subtitle: "The Investor",
+                description: "You view money as a tool to grow your wealth. You're comfortable taking calculated risks and enjoy researching and making investment decisions.",
+                strengths: "Proactive, informed about investments, builds wealth over time, financially strategic.",
+                weaknesses: "Might prioritize returns over security, susceptible to market fluctuations, may take excessive risks."
+            },
+            D: {
+                name: "BAMBIALA",
+                subtitle: "The Debtor",
+                description: "You tend to spend more than you earn and rely on credit cards or loans to cover expenses. You may struggle with budgeting and impulse buying.",
+                strengths: "Can access resources quickly, may be good at negotiations, adaptable in tough situations.",
+                weaknesses: "Prone to high-interest debt, creates financial stress, difficulty with long-term planning."
+            },
+            E: {
+                name: "OGBON SODIKI",
+                subtitle: "The Balanced Money Manager",
+                description: "You find a middle ground between saving and spending. You enjoy a comfortable lifestyle but prioritize financial responsibility.",
+                strengths: "Makes informed financial decisions, minimizes financial risks, balanced approach to life and money.",
+                weaknesses: "Can be overly cautious, might miss out on investment opportunities, analysis paralysis."
+            }
+        };
+
+        // Track progress
+        const form = document.getElementById('quiz-form');
+        const progressFill = document.getElementById('progress-fill');
+        const progressCounter = document.getElementById('progress-counter');
+        const totalQuestions = 10;
+
+        // Update progress bar
+        function updateProgress() {
+            let answeredCount = 0;
+            for (let i = 1; i <= totalQuestions; i++) {
+                const radios = document.getElementsByName(`q${i}`);
+                for (let radio of radios) {
+                    if (radio.checked) {
+                        answeredCount++;
+                        break;
+                    }
+                }
+            }
+            
+            const percentage = (answeredCount / totalQuestions) * 100;
+            progressFill.style.width = percentage + '%';
+            progressCounter.textContent = `Question ${answeredCount} of ${totalQuestions}`;
+        }
+
+        // Add event listeners to all radio buttons
+        document.querySelectorAll('input[type="radio"]').forEach(radio => {
+            radio.addEventListener('change', function() {
+                updateProgress();
+                
+                // Remove selected class from all options in this question
+                const questionName = this.name;
+                document.querySelectorAll(`input[name="${questionName}"]`).forEach(r => {
+                    r.closest('.option').classList.remove('selected');
+                });
+                
+                // Add selected class to chosen option
+                this.closest('.option').classList.add('selected');
+            });
+        });
+
+        // Handle form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Count answers
+            const counts = { A: 0, B: 0, C: 0, D: 0, E: 0 };
+            
+            for (let i = 1; i <= totalQuestions; i++) {
+                const radios = document.getElementsByName(`q${i}`);
+                for (let radio of radios) {
+                    if (radio.checked) {
+                        counts[radio.value]++;
+                        break;
+                    }
+                }
+            }
+            
+            // Find dominant personality
+            let maxCount = 0;
+            let dominantPersonality = '';
+            
+            for (let letter in counts) {
+                if (counts[letter] > maxCount) {
+                    maxCount = counts[letter];
+                    dominantPersonality = letter;
+                }
+            }
+            
+            // Display results
+            displayResults(dominantPersonality, counts);
+        });
+
+        function displayResults(personality, counts) {
+            // Hide quiz section
+            document.getElementById('quiz-section').style.display = 'none';
+            
+            // Show results section
+            const resultsSection = document.getElementById('results-section');
+            resultsSection.style.display = 'block';
+            
+            // Populate results
+            const data = personalities[personality];
+            document.getElementById('personality-name').textContent = data.name;
+            document.getElementById('personality-subtitle').textContent = data.subtitle;
+            document.getElementById('personality-description').textContent = data.description;
+            document.getElementById('strengths-text').textContent = data.strengths;
+            document.getElementById('weaknesses-text').textContent = data.weaknesses;
+            
+            // Display score breakdown
+            const scoreItems = document.getElementById('score-items');
+            scoreItems.innerHTML = '';
+            
+            const personalityNames = {
+                A: 'Arcagon (Saver)',
+                B: 'Ashawo (Big Spender)',
+                C: 'Odogwu (Investor)',
+                D: 'Bambiala (Debtor)',
+                E: 'Ogbon Sodiki (Balanced)'
+            };
+            
+            // Sort by count descending
+            const sortedEntries = Object.entries(counts).sort((a, b) => b[1] - a[1]);
+            
+            sortedEntries.forEach(([letter, count]) => {
+                const scoreItem = document.createElement('div');
+                scoreItem.className = 'score-item';
+                
+                const percentage = (count / totalQuestions) * 100;
+                
+                scoreItem.innerHTML = `
+                    <span class="score-label">${personalityNames[letter]}</span>
+                    <div class="score-bar">
+                        <div class="score-fill" style="width: ${percentage}%"></div>
+                    </div>
+                    <span class="score-value">${count}</span>
+                `;
+                
+                scoreItems.appendChild(scoreItem);
+            });
+            
+            // Scroll to top smoothly
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        function restartQuiz() {
+            // Reset form
+            document.getElementById('quiz-form').reset();
+            
+            // Remove all selected classes
+            document.querySelectorAll('.option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            
+            // Reset progress
+            progressFill.style.width = '0%';
+            progressCounter.textContent = 'Question 0 of 10';
+            
+            // Hide results, show quiz
+            document.getElementById('results-section').style.display = 'none';
+            document.getElementById('quiz-section').style.display = 'block';
+            
+            // Scroll to top smoothly
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Initialize progress on page load
+        updateProgress();
+    </script>
+</body>
+</html>
