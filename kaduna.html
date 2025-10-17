@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaduna Tech Hub Attendance</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Customizing Tailwind colors to match the Kaduna theme (Dark Green)
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'kaduna-dark': '#006400', // A strong, dark green
+                        'kaduna-medium': '#008000', // Standard Kaduna Green
+                        'kaduna-light': '#f0fff0', // Near-white off-green
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 font-sans">
+
+    <div class="w-full max-w-lg bg-white p-6 md:p-10 rounded-xl shadow-2xl border-t-8 border-kaduna-medium">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-extrabold text-kaduna-dark mb-1">
+                Welcome to Kaduna Tech Hub 💻
+            </h1>
+            <h2 class="text-xl text-gray-600 font-light border-b pb-2">
+                Attendance & Visitor Sign-In
+            </h2>
+        </header>
+
+        <!-- The form will be processed by JavaScript and the Google Script URL -->
+        <form id="attendanceForm" class="space-y-6">
+            
+            <div class="space-y-1">
+                <label for="Name" class="block text-sm font-medium text-gray-700">Full Name</label>
+                <input type="text" id="Name" name="Name" required 
+                       placeholder="Enter your full name"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-kaduna-medium focus:border-kaduna-medium transition duration-150">
+            </div>
+
+            <div class="space-y-1">
+                <label for="Phone" class="block text-sm font-medium text-gray-700">Phone Number</label>
+                <input type="tel" id="Phone" name="Phone" required
+                       placeholder="e.g., 08012345678"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-kaduna-medium focus:border-kaduna-medium transition duration-150">
+            </div>
+
+            <div class="space-y-1">
+                <label for="Email" class="block text-sm font-medium text-gray-700">Email Address</label>
+                <input type="email" id="Email" name="Email" required
+                       placeholder="e.g., student@example.com"
+                       class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-lg shadow-sm focus:ring-kaduna-medium focus:border-kaduna-medium transition duration-150">
+            </div>
+
+            <button type="submit" id="submitButton"
+                    class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-lg font-semibold text-white bg-kaduna-medium hover:bg-kaduna-dark focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-kaduna-dark transition duration-300 ease-in-out disabled:opacity-50">
+                Sign In & Record Attendance
+            </button>
+            
+            <!-- Response Message Area -->
+            <p id="responseMessage" class="hidden text-center response-message"></p>
+        </form>
+    </div>
+
+    <script>
+        const form = document.getElementById('attendanceForm');
+        const responseMessage = document.getElementById('responseMessage');
+        const submitButton = document.getElementById('submitButton');
+        
+        // !!! IMPORTANT: REPLACE THIS PLACEHOLDER WITH YOUR GOOGLE APPS SCRIPT WEB APP URL FROM STEP 4 !!!
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbzdnR2VS1YfsjoMJUXHJAgNLoFXPavVrMfNlxxBqP97vCwPdchegw-Y5nrWK0zgmxvt_g/exec'; 
+
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            if (scriptURL === 'YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE') {
+                responseMessage.textContent = 'Setup Error: Please replace the placeholder scriptURL in the code.';
+                responseMessage.className = 'p-3 rounded-lg text-red-800 bg-red-100 response-message';
+                return;
+            }
+
+            // Disable button and show loading state
+            submitButton.disabled = true;
+            submitButton.textContent = 'Recording...';
+            responseMessage.textContent = 'Submitting your data...';
+            responseMessage.className = 'p-3 rounded-lg text-yellow-800 bg-yellow-100 response-message';
+
+            try {
+                // Use the FormData object to easily capture all form fields
+                const response = await fetch(scriptURL, { 
+                    method: 'POST', 
+                    body: new FormData(form),
+                    // mode: 'no-cors' is often needed when posting to Google Forms/Scripts
+                    mode: 'no-cors' 
+                });
+
+                // NOTE: When using 'no-cors' mode for Google Scripts, the 'response.ok' check is unreliable 
+                // because the actual status code is hidden. We rely on the script being successfully triggered.
+
+                // In a 'no-cors' fetch to Google Scripts, we assume success if the fetch promise resolves.
+                responseMessage.textContent = 'Attendance recorded successfully! Welcome to the Hub.';
+                responseMessage.className = 'p-3 rounded-lg text-kaduna-dark bg-kaduna-light response-message';
+                
+                // Reset the form after successful submission
+                form.reset(); 
+
+            } catch (error) {
+                // Handle network errors (not script errors, which are hidden by no-cors)
+                responseMessage.textContent = 'Connection Error: Could not reach the server. Check your connection.';
+                responseMessage.className = 'p-3 rounded-lg text-red-800 bg-red-100 response-message';
+                console.error('Error submitting form:', error);
+
+            } finally {
+                // Re-enable the button and reset text after delay
+                setTimeout(() => {
+                    submitButton.disabled = false;
+                    submitButton.textContent = 'Sign In & Record Attendance';
+                }, 1000); // 1 second delay
+            }
+        });
+    </script>
+</body>
+</html>
