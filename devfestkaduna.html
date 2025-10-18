@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Nok Head Hunter - Kaduna Game</title>
+    <!-- Load Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Custom font and basic setup */
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #fef3c7; /* Light Gold Background */
+        }
+        .game-container {
+            max-width: 420px; /* Mobile-friendly width */
+            margin: 0 auto;
+        }
+        /* Custom Nok Head SVG for visual appeal */
+        .nok-head {
+            cursor: pointer;
+            transition: transform 0.05s ease-out;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent; /* Remove tap highlight on mobile */
+        }
+        .nok-head:active {
+            transform: scale(0.95);
+        }
+        /* Style for the button (optional, supplementing Tailwind) */
+        .primary-button {
+            transition: all 0.2s;
+            box-shadow: 0 4px #92400e; /* Shadow effect */
+        }
+        .primary-button:active {
+            transform: translateY(2px);
+            box-shadow: 0 2px #92400e;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex items-center justify-center p-4">
+    <div class="game-container bg-white p-6 rounded-2xl shadow-2xl border-b-8 border-yellow-800/50">
+        <header class="text-center mb-6">
+            <h1 class="text-3xl font-extrabold text-yellow-800">The Nok Head Hunter</h1>
+            <p class="text-sm text-yellow-600 mt-1">Tap the ancient Nok Head as fast as you can in 10 seconds!</p>
+        </header>
+
+        <!-- Game Statistics -->
+        <div class="flex justify-between text-center mb-6 p-3 bg-yellow-50 rounded-lg border border-yellow-200">
+            <div>
+                <p class="text-sm font-semibold text-gray-500">Score</p>
+                <p id="score-display" class="text-4xl font-black text-yellow-900">0</p>
+            </div>
+            <div>
+                <p class="text-sm font-semibold text-gray-500">Time Left</p>
+                <p id="timer-display" class="text-4xl font-black text-red-600">10.0</p>
+            </div>
+        </div>
+
+        <!-- Nok Head Target -->
+        <!-- Added 'relative' class to contain the absolute overlay -->
+        <div id="game-area" class="relative flex justify-center items-center h-48 bg-gray-100 rounded-xl mb-6">
+            <!-- SVG representation of the Nok Head -->
+            <svg id="nok-target" class="nok-head w-36 h-36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="50" cy="50" r="45" fill="#a0522d" stroke="#5a381d" stroke-width="4"/>
+                <!-- Eyes -->
+                <ellipse cx="38" cy="40" rx="8" ry="12" fill="#5a381d"/>
+                <ellipse cx="62" cy="40" rx="8" ry="12" fill="#5a381d"/>
+                <!-- Mouth (stylized) -->
+                <path d="M40 70 C45 78, 55 78, 60 70" stroke="#5a381d" stroke-width="3" stroke-linecap="round"/>
+                <!-- Nose (simple) -->
+                <rect x="47" y="50" width="6" height="10" rx="3" fill="#5a381d"/>
+            </svg>
+            <!-- Added 'z-20' for proper layering and ensured opacity/pointer-events control visibility -->
+            <div id="start-overlay" class="absolute z-20 bg-yellow-900/90 w-full h-full rounded-xl flex items-center justify-center transition-opacity duration-300">
+                <p class="text-white text-xl font-bold">Tap 'Start' to begin!</p>
+            </div>
+            <div id="message-box" class="absolute p-4 bg-red-600 text-white rounded-lg shadow-xl text-center text-lg font-bold hidden z-10">
+                Time's Up!
+            </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="space-y-4">
+            <button id="start-button" class="primary-button w-full py-4 text-xl font-bold rounded-xl bg-yellow-600 hover:bg-yellow-700 text-white uppercase tracking-wider">
+                Start Game
+            </button>
+
+            <!-- Share Section (initially hidden) -->
+            <div id="share-section" class="hidden">
+                <p class="text-center text-lg font-semibold text-green-700 mb-2">🎉 You hit <span id="final-score" class="font-black text-xl">0</span> Nok Heads!</p>
+                <button id="share-button" class="w-full py-3 text-lg font-bold rounded-xl bg-blue-500 hover:bg-blue-600 text-white flex items-center justify-center space-x-2">
+                    <!-- Twitter Icon SVG -->
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="white">
+                        <path d="M23.643 4.937c-.832.37-1.73.618-2.675.733a4.671 4.671 0 002.048-2.576 9.363 9.363 0 01-2.95 1.137c-.783-.835-1.89-1.357-3.13-1.357-2.368 0-4.296 1.93-4.296 4.301 0 .337.039.664.116.979-3.57-.18-6.735-1.894-8.854-4.484-.37.636-.583 1.375-.583 2.16 0 1.49.757 2.809 1.905 3.58a4.28 4.28 0 01-1.946-.537v.053c0 2.094 1.488 3.837 3.465 4.23-.362.099-.744.152-1.135.152-.278 0-.547-.026-.807-.076.551 1.724 2.15 2.977 4.053 3.012-1.474 1.157-3.332 1.848-5.362 1.848-.35 0-.693-.021-1.029-.061 1.907 1.22 4.178 1.933 6.619 1.933 7.94 0 12.275-6.578 12.275-12.275 0-.188-.003-.375-.011-.561.845-.609 1.574-1.369 2.155-2.235z"/>
+                    </svg>
+                    <span>Share Score & Tag @geektutor</span>
+                </button>
+            </div>
+        </div>
+
+        <p class="text-center text-xs text-gray-400 mt-4">Made for DevFest Kaduna</p>
+
+    </div>
+
+    <script type="module">
+        const GAME_DURATION = 10; // seconds
+        let score = 0;
+        let timeLeft = GAME_DURATION;
+        let gameInterval;
+        let gameState = 'IDLE';
+
+        const scoreDisplay = document.getElementById('score-display');
+        const timerDisplay = document.getElementById('timer-display');
+        const startButton = document.getElementById('start-button');
+        const nokTarget = document.getElementById('nok-target');
+        const startOverlay = document.getElementById('start-overlay');
+        const shareSection = document.getElementById('share-section');
+        const shareButton = document.getElementById('share-button');
+        const finalScoreDisplay = document.getElementById('final-score');
+        const messageBox = document.getElementById('message-box');
+        
+        // Helper function to show temporary message
+        function showMessage(text, isError = false) {
+            messageBox.textContent = text;
+            // Only modify classes that need to change
+            messageBox.classList.remove('hidden', 'bg-red-600', 'bg-green-600'); 
+            messageBox.classList.add(isError ? 'bg-red-600' : 'bg-green-600');
+
+            setTimeout(() => {
+                messageBox.classList.add('hidden');
+            }, 1500);
+        }
+
+        // --- Game Logic ---
+
+        function updateTimer() {
+            if (timeLeft <= 0) {
+                clearInterval(gameInterval);
+                endGame();
+                return;
+            }
+            timeLeft -= 0.1;
+            timerDisplay.textContent = timeLeft.toFixed(1);
+        }
+
+        function startGame() {
+            if (gameState === 'PLAYING') return;
+
+            gameState = 'PLAYING';
+            score = 0;
+            timeLeft = GAME_DURATION;
+            scoreDisplay.textContent = score;
+            timerDisplay.textContent = timeLeft.toFixed(1);
+            
+            // FIX: Hide the overlay and ensure it doesn't capture events
+            startOverlay.classList.add('opacity-0', 'pointer-events-none');
+            startOverlay.classList.remove('z-20'); // Remove high z-index when hidden
+
+            shareSection.classList.add('hidden');
+            startButton.textContent = 'Game In Progress...';
+            startButton.disabled = true;
+
+            gameInterval = setInterval(updateTimer, 100);
+            nokTarget.addEventListener('click', handleTap);
+            nokTarget.addEventListener('touchstart', handleTap);
+        }
+
+        function endGame() {
+            gameState = 'FINISHED';
+            nokTarget.removeEventListener('click', handleTap);
+            nokTarget.removeEventListener('touchstart', handleTap);
+
+            // Update UI for end state
+            startButton.textContent = 'Play Again';
+            startButton.disabled = false;
+            
+            // Show the overlay again for the next start, and bring it to the front
+            startOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            startOverlay.classList.add('z-20');
+            startOverlay.querySelector('p').textContent = `Game Over! Score: ${score}`;
+
+            finalScoreDisplay.textContent = score;
+            shareSection.classList.remove('hidden');
+            showMessage("Time's Up!", true);
+        }
+
+        function handleTap(event) {
+            event.preventDefault(); // Prevent default touch behavior
+            if (gameState !== 'PLAYING') return;
+            
+            score++;
+            scoreDisplay.textContent = score;
+
+            // Simple visual feedback
+            nokTarget.style.transform = 'scale(0.9)';
+            setTimeout(() => {
+                nokTarget.style.transform = 'scale(1)';
+            }, 50);
+
+        }
+
+        function handleShare() {
+            const finalScore = score;
+            const tweetText = encodeURIComponent(`I scored ${finalScore} points in the Nok Head Hunter game at #DevFestKaduna! Can you beat me? https://tinyurl.com/nokheadhunter`);
+            const tweetURL = `https://twitter.com/intent/tweet?text=${tweetText}&via=geektutor`;
+            
+            window.open(tweetURL, '_blank');
+        }
+
+        // --- Event Listeners ---
+
+        startButton.addEventListener('click', () => {
+            if (gameState === 'IDLE' || gameState === 'FINISHED') {
+                startGame();
+            }
+        });
+
+        shareButton.addEventListener('click', handleShare);
+        
+        // Initial setup: ensure overlay is visible and ready to prompt the user
+        startButton.textContent = 'Start Game';
+        startOverlay.classList.remove('opacity-0', 'pointer-events-none');
+        startOverlay.classList.add('z-20');
+
+
+    </script>
+</body>
+</html>
