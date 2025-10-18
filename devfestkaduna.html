@@ -60,7 +60,7 @@
         <div id="game-area" class="relative flex justify-center items-center h-48 bg-gray-100 rounded-xl mb-6">
             <!-- Replaced SVG with the external JPG image -->
             <img id="nok-target" 
-                 src="https://i.ibb.co/FtmM2XD/PHOTO-2025-10-18-01-51-17.jpg" 
+                 src="https://i.ibb.co/N6j064Vf/Nok-Head.jpg" 
                  alt="Ancient Nok Head terracotta sculpture" 
                  class="nok-head w-36 h-36 object-cover rounded-full shadow-lg" 
                  onerror="this.onerror=null; this.src='https://placehold.co/144x144/a0522d/ffffff?text=Image+Error'" />
@@ -203,7 +203,7 @@
         function handleShare() {
             const finalScore = score;
             // Updated share message with the new URL format
-            const tweetText = encodeURIComponent(`I scored ${finalScore} points in the Nok Head Hunter game at #DevFestKaduna! Can you beat me? https://tinyurl.com/nokheadhunter`);
+            const tweetText = encodeURIComponent(`I scored ${finalScore} points in the Nok Head Hunter game at #DevFestKaduna! Can you beat me? shorturl.at/uKooz`);
             const tweetURL = `https://twitter.com/intent/tweet?text=${tweetText}&via=geektutor`;
             
             window.open(tweetURL, '_blank');
