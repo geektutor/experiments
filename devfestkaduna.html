@@ -16,7 +16,7 @@
             max-width: 420px; /* Mobile-friendly width */
             margin: 0 auto;
         }
-        /* Custom Nok Head SVG for visual appeal */
+        /* Custom Nok Head styling (applies to the new image) */
         .nok-head {
             cursor: pointer;
             transition: transform 0.05s ease-out;
@@ -57,20 +57,14 @@
         </div>
 
         <!-- Nok Head Target -->
-        <!-- Added 'relative' class to contain the absolute overlay -->
         <div id="game-area" class="relative flex justify-center items-center h-48 bg-gray-100 rounded-xl mb-6">
-            <!-- SVG representation of the Nok Head -->
-            <svg id="nok-target" class="nok-head w-36 h-36" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="50" cy="50" r="45" fill="#a0522d" stroke="#5a381d" stroke-width="4"/>
-                <!-- Eyes -->
-                <ellipse cx="38" cy="40" rx="8" ry="12" fill="#5a381d"/>
-                <ellipse cx="62" cy="40" rx="8" ry="12" fill="#5a381d"/>
-                <!-- Mouth (stylized) -->
-                <path d="M40 70 C45 78, 55 78, 60 70" stroke="#5a381d" stroke-width="3" stroke-linecap="round"/>
-                <!-- Nose (simple) -->
-                <rect x="47" y="50" width="6" height="10" rx="3" fill="#5a381d"/>
-            </svg>
-            <!-- Added 'z-20' for proper layering and ensured opacity/pointer-events control visibility -->
+            <!-- Replaced SVG with the external JPG image -->
+            <img id="nok-target" 
+                 src="https://i.ibb.co/FtmM2XD/PHOTO-2025-10-18-01-51-17.jpg" 
+                 alt="Ancient Nok Head terracotta sculpture" 
+                 class="nok-head w-36 h-36 object-cover rounded-full shadow-lg" 
+                 onerror="this.onerror=null; this.src='https://placehold.co/144x144/a0522d/ffffff?text=Image+Error'" />
+
             <div id="start-overlay" class="absolute z-20 bg-yellow-900/90 w-full h-full rounded-xl flex items-center justify-center transition-opacity duration-300">
                 <p class="text-white text-xl font-bold">Tap 'Start' to begin!</p>
             </div>
@@ -96,6 +90,12 @@
                     <span>Share Score & Tag @geektutor</span>
                 </button>
             </div>
+        </div>
+        
+        <!-- Sidenote Section -->
+        <div class="p-4 mt-6 bg-yellow-100 rounded-xl border border-yellow-300 text-sm text-yellow-900">
+            <p class="font-bold mb-1">Side Note: Learn More About Nok</p>
+            <p>Nok art was created by the ancient Nok people of present-day <span class="font-semibold">Kaduna State, Nigeria</span> — particularly around the Nok village area where the first artifacts were discovered. <a href="https://en.wikipedia.org/wiki/Nok_culture" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-medium">Learn more on Wikipedia</a>.</p>
         </div>
 
         <p class="text-center text-xs text-gray-400 mt-4">Made for DevFest Kaduna</p>
@@ -134,12 +134,13 @@
         // --- Game Logic ---
 
         function updateTimer() {
+            timeLeft -= 0.1; // Decrement first
+
             if (timeLeft <= 0) {
+                timeLeft = 0; // Ensure it never goes below zero before stopping
                 clearInterval(gameInterval);
                 endGame();
-                return;
             }
-            timeLeft -= 0.1;
             timerDisplay.textContent = timeLeft.toFixed(1);
         }
 
@@ -152,9 +153,9 @@
             scoreDisplay.textContent = score;
             timerDisplay.textContent = timeLeft.toFixed(1);
             
-            // FIX: Hide the overlay and ensure it doesn't capture events
+            // Hide the overlay and ensure it doesn't capture events
             startOverlay.classList.add('opacity-0', 'pointer-events-none');
-            startOverlay.classList.remove('z-20'); // Remove high z-index when hidden
+            startOverlay.classList.remove('z-20'); 
 
             shareSection.classList.add('hidden');
             startButton.textContent = 'Game In Progress...';
@@ -201,6 +202,7 @@
 
         function handleShare() {
             const finalScore = score;
+            // Updated share message with the new URL format
             const tweetText = encodeURIComponent(`I scored ${finalScore} points in the Nok Head Hunter game at #DevFestKaduna! Can you beat me? https://tinyurl.com/nokheadhunter`);
             const tweetURL = `https://twitter.com/intent/tweet?text=${tweetText}&via=geektutor`;
             
