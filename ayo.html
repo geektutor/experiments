@@ -1,0 +1,1002 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Olamilekan & Ayomide - Our Wedding</title>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@300;400;600;700&family=Poppins:wght@300;400;500;600&display=swap');
+    
+    :root {
+        --olive-green: #6B8E23;
+        --dark-olive: #556B2F;
+        --light-olive: #9ACD32;
+        --sage-green: #87A96B;
+        --mint-cream: #F5FFFA;
+        --white: #ffffff;
+        --off-white: #fefefe;
+        --dark: #2c2c2c;
+        --light-gray: #f8f9fa;
+        --forest-green: #228B22;
+        --cream: #ffdcf3;
+        --pink: #e393c7;
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: 'Poppins', sans-serif;
+        line-height: 1.6;
+        color: var(--dark);
+        overflow-x: hidden;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+    }
+
+    /* Navigation */
+    nav {
+        position: fixed;
+        top: 0;
+        width: 100%;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        z-index: 1000;
+        padding: 1rem 0;
+        transition: all 0.3s ease;
+    }
+
+    nav.scrolled {
+        background: rgba(255, 255, 255, 0.98);
+        box-shadow: 0 2px 20px rgba(0,0,0,0.1);
+    }
+
+    .nav-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .logo {
+        font-family: 'Playfair Display', serif;
+        font-size: 1.8rem;
+        font-weight: 600;
+        background: linear-gradient(45deg, var(--olive-green), var(--forest-green));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .nav-links {
+        display: flex;
+        list-style: none;
+        gap: 2rem;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: var(--dark);
+        font-weight: 500;
+        transition: all 0.3s ease;
+        position: relative;
+    }
+
+    .nav-links a:hover {
+        color: var(--olive-green);
+    }
+
+    .nav-links a::after {
+        content: '';
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background: linear-gradient(45deg, var(--olive-green), var(--forest-green));
+        transition: width 0.3s ease;
+    }
+
+    .nav-links a:hover::after {
+        width: 100%;
+    }
+
+    .mobile-menu {
+        display: none;
+        flex-direction: column;
+        cursor: pointer;
+    }
+
+    .mobile-menu span {
+        width: 25px;
+        height: 3px;
+        background: var(--dark);
+        margin: 3px 0;
+        transition: 0.3s;
+    }
+
+    /* Hero Section */
+    .hero {
+        height: 100vh;
+        background: linear-gradient(135deg, var(--olive-green) 0%, var(--sage-green) 30%, var(--light-olive) 70%, var(--mint-cream) 100%);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="hearts" x="0" y="0" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M10,15 C10,12 8,10 5,10 C2,10 0,12 0,15 C0,18 5,23 10,25 C15,23 20,18 20,15 C20,12 18,10 15,10 C12,10 10,12 10,15 Z" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23hearts)"/></svg>') center/200px;
+        opacity: 0.3;
+        animation: float 20s ease-in-out infinite;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px) rotate(0deg); }
+        50% { transform: translateY(-20px) rotate(5deg); }
+    }
+
+    .hero-content {
+        z-index: 2;
+        position: relative;
+    }
+
+    .hero h1 {
+        font-family: 'Playfair Display', serif;
+        font-size: 4rem;
+        font-weight: 700;
+        color: var(--white);
+        margin-bottom: 1rem;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        animation: fadeInUp 1.5s ease;
+    }
+
+    .hero-subtitle {
+        font-size: 1.5rem;
+        color: var(--white);
+        margin-bottom: 2rem;
+        animation: fadeInUp 1.5s ease 0.3s both;
+    }
+
+    .wedding-date {
+        background: rgba(255,255,255,0.2);
+        backdrop-filter: blur(10px);
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: var(--white);
+        display: inline-block;
+        animation: fadeInUp 1.5s ease 0.6s both;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Sections */
+    section {
+        padding: 5rem 0;
+    }
+
+    .section-title {
+        font-family: 'Playfair Display', serif;
+        font-size: 3rem;
+        text-align: center;
+        margin-bottom: 3rem;
+        background: linear-gradient(45deg, var(--olive-green), var(--forest-green));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Our Story */
+    .story-content {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        align-items: center;
+    }
+
+    .story-text {
+        font-size: 1.1rem;
+        line-height: 1.8;
+    }
+
+    .story-image {
+        background: linear-gradient(45deg, var(--olive-green), var(--sage-green));
+        height: 400px;
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .story-image::before {
+        content: '';
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 300px;
+        height: 300px;
+        background-image: url('https://i.ibb.co/b02RZFy/IMG-2745.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    /* Gallery Section Styles */
+    .gallery-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 1.5rem;
+        margin-top: 3rem;
+    }
+
+    .gallery-item {
+        position: relative;
+        overflow: hidden;
+        border-radius: 15px;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+        transition: transform 0.3s ease, box-shadow 0.3s ease;
+        cursor: pointer;
+    }
+
+    .gallery-item:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.25);
+    }
+
+    .gallery-item img {
+        width: 100%;
+        height: 350px;
+        object-fit: cover;
+        display: block;
+        transition: transform 0.5s ease;
+    }
+
+    .gallery-item:hover img {
+        transform: scale(1.1);
+    }
+
+    /* Lightbox Styles */
+    #lightbox {
+        display: none;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0,0,0,0.95);
+        z-index: 9999;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #lightbox.active {
+        display: flex;
+    }
+
+    #lightboxImg {
+        max-width: 90%;
+        max-height: 90%;
+        object-fit: contain;
+        border-radius: 10px;
+    }
+
+    #closeLightbox {
+        position: absolute;
+        top: 20px;
+        right: 40px;
+        font-size: 40px;
+        color: white;
+        cursor: pointer;
+        z-index: 10000;
+        transition: color 0.3s ease;
+    }
+
+    #closeLightbox:hover {
+        color: var(--light-olive);
+    }
+
+    .lightbox-nav {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 50px;
+        color: white;
+        cursor: pointer;
+        user-select: none;
+        padding: 20px;
+        transition: color 0.3s ease;
+    }
+
+    .lightbox-nav:hover {
+        color: var(--light-olive);
+    }
+
+    #prevBtn {
+        left: 20px;
+    }
+
+    #nextBtn {
+        right: 20px;
+    }
+
+    /* Wedding Details */
+    .wedding-details {
+        background: var(--light-gray);
+    }
+
+    .details-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+    }
+
+    .detail-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 20px;
+        text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: transform 0.3s ease;
+    }
+
+    .detail-card:hover {
+        transform: translateY(-10px);
+    }
+
+    .detail-icon {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        background: linear-gradient(45deg, var(--olive-green), var(--forest-green));
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    /* Aso-Ebi Section */
+    .aso-ebi {
+        background: linear-gradient(135deg, var(--mint-cream) 0%, var(--white) 50%, var(--cream) 100%);
+    }
+
+    .aso-ebi-content {
+        text-align: center;
+        margin-bottom: 3rem;
+    }
+
+    .color-guide {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .color-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    .color-swatch {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        border: 3px solid var(--white);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .pink-swatch {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        margin: 0 auto 1rem;
+        border: 3px solid var(--pink);
+        box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+    }
+
+    .olive-green-swatch { background: var(--olive-green); }
+    .white-swatch { background: var(--white); border: 2px solid var(--olive-green); }
+
+    .form-button {
+        display: inline-block;
+        background: linear-gradient(45deg, var(--olive-green), var(--forest-green));
+        color: var(--white);
+        padding: 1rem 2rem;
+        border-radius: 50px;
+        text-decoration: none;
+        font-weight: 600;
+        transition: transform 0.3s ease;
+        box-shadow: 0 5px 15px rgba(107, 142, 35, 0.4);
+    }
+
+    .form-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+    }
+
+    /* Photo Sharing */
+    .photo-sharing {
+        text-align: center;
+        background: var(--light-gray);
+    }
+
+    .photo-upload-area {
+        background: var(--white);
+        border: 3px dashed var(--olive-green);
+        border-radius: 20px;
+        padding: 3rem;
+        margin: 2rem 0;
+        transition: all 0.3s ease;
+    }
+
+    .photo-upload-area:hover {
+        background: var(--mint-cream);
+        border-color: var(--forest-green);
+    }
+
+    /* Contact */
+    .contact-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 2rem;
+    }
+
+    .contact-card {
+        background: var(--white);
+        padding: 2rem;
+        border-radius: 15px;
+        text-align: center;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    }
+
+    /* Footer */
+    footer {
+        background: var(--dark);
+        color: var(--white);
+        text-align: center;
+        padding: 3rem 0;
+    }
+
+    .footer-hearts {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+        animation: pulse 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+        0%, 100% { transform: scale(1); }
+        50% { transform: scale(1.1); }
+    }
+
+    /* Mobile Responsiveness */
+    @media (max-width: 768px) {
+        .nav-links {
+            display: none;
+        }
+
+        .mobile-menu {
+            display: flex;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+        }
+
+        .hero-subtitle {
+            font-size: 1.2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+        }
+
+        .story-content {
+            grid-template-columns: 1fr;
+        }
+
+        .story-image {
+            height: 300px;
+        }
+
+        .gallery-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .gallery-item img {
+            height: 300px;
+        }
+
+        .details-grid {
+            grid-template-columns: 1fr;
+        }
+
+        #prevBtn, #nextBtn {
+            font-size: 30px;
+            padding: 10px;
+        }
+
+        #closeLightbox {
+            font-size: 30px;
+            right: 20px;
+        }
+
+        .color-guide {
+            grid-template-columns: 1fr;
+        }
+    }
+
+    /* Smooth scrolling */
+    html {
+        scroll-behavior: smooth;
+    }
+
+    /* Loading animation */
+    .loading {
+        display: inline-block;
+        width: 20px;
+        height: 20px;
+        border: 3px solid rgba(255,255,255,.3);
+        border-radius: 50%;
+        border-top-color: #fff;
+        animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+</style>
+</head>
+<body>
+<!-- Navigation -->
+<nav id="navbar">
+    <div class="container">
+        <div class="nav-container">
+            <div class="logo">A & O</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#story">Our Story</a></li>
+                <li><a href="#details">Wedding Details</a></li>
+                <li><a href="#aso-ebi">Aso-Ebi</a></li>
+                <li><a href="#photos">Photos</a></li>
+                <li><a href="#contact">Contact</a></li>
+            </ul>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- Hero Section -->
+<section id="home" class="hero">
+    <div class="hero-content">
+        <h1>Ayomide & Olamilekan</h1>
+        <p class="hero-subtitle">Together Forever Starts Here</p>
+        <div class="wedding-date">
+            📅 13th of December, 2025 • 📍 Lagos, Nigeria
+        </div>
+    </div>
+</section>
+
+<!-- Our Story Section with Integrated Gallery -->
+<section id="story" style="background: linear-gradient(135deg, var(--mint-cream) 0%, var(--white) 100%);">
+    <div class="container">
+        <h2 class="section-title">Our Love Story</h2>
+        <div class="story-content" style="margin-bottom: 4rem;">
+            <div class="story-text">
+                <p>We met on a random walk as strangers</p>
+                <p>exchanged words like morning mist</p>
+                <p>then forgot one another</p>
+                <p>until fate placed us on the same BRT</p>
+                <p>two hearts finding one another.</p>
+                <p>Now we're boarding a different kind of journey</p>
+                <p>destination: <b>forever</b>.</p>
+            </div>
+            <div class="story-image"></div>
+        </div>
+        
+        <!-- Photo Gallery integrated into story -->
+        <div style="text-align: center; margin-bottom: 2rem;">
+            <p style="font-size: 1.2rem; color: var(--dark-olive); font-style: italic;">
+                💕 Captured moments from our journey 💕
+            </p>
+        </div>
+        
+        <div class="gallery-grid">            
+            <div class="gallery-item" onclick="openLightbox(0)">
+                <img src="https://i.ibb.co/TqtGmYVj/IMG-2656.jpg" alt="Ayomide & Olamilekan - Photo 1" loading="lazy">
+            </div>
+            
+            <div class="gallery-item" onclick="openLightbox(1)">
+                <img src="https://i.ibb.co/ppcN2th/IMG-2943.jpg" alt="Ayomide & Olamilekan - Photo 2" loading="lazy">
+            </div>
+            
+            <div class="gallery-item" onclick="openLightbox(2)">
+                <img src="https://i.ibb.co/DDGNL1Yw/IMG-2644.jpg" alt="Ayomide & Olamilekan - Photo 3" loading="lazy">
+            </div>
+            
+            <div class="gallery-item" onclick="openLightbox(3)">
+                <img src="https://i.ibb.co/cKWytFW5/IMG-2853.jpg" alt="Ayomide & Olamilekan - Photo 4" loading="lazy">
+            </div>
+
+            <div class="gallery-item" onclick="openLightbox(4)">
+                <img src="https://i.ibb.co/Xxgzb3G2/IMG-2685.jpg" alt="Ayomide & Olamilekan - Photo 5" loading="lazy">
+            </div>
+
+            <div class="gallery-item" onclick="openLightbox(5)">
+                <img src="https://i.ibb.co/LzTCk8KX/IMG-2877.jpg" alt="Ayomide & Olamilekan - Photo 6" loading="lazy">
+            </div>
+        </div>
+        
+        <div style="text-align: center; margin-top: 2rem;">
+            <p style="color: var(--dark-olive); font-style: italic; font-size: 0.9rem;">Click on any photo to view in full screen</p>
+        </div>
+    </div>
+</section>
+
+<!-- Lightbox Modal -->
+<div id="lightbox" onclick="closeLightboxOnBackground(event)">
+    <span id="closeLightbox" onclick="closeLightbox()">&times;</span>
+    <img id="lightboxImg" src="" alt="Gallery Photo">
+    <div id="prevBtn" class="lightbox-nav" onclick="changePhoto(-1)">&#10094;</div>
+    <div id="nextBtn" class="lightbox-nav" onclick="changePhoto(1)">&#10095;</div>
+</div>
+
+<!-- Wedding Details Section -->
+<section id="details" class="wedding-details">
+    <div class="container">
+        <h2 class="section-title">Wedding Details</h2>
+        <div class="details-grid">            
+            <div class="detail-card">
+                <div class="detail-icon">💒</div>
+                <h3>White Wedding</h3>
+                <p><strong>Time:</strong> 10:00 am</p>
+                <p><strong>Venue:</strong> The Covenant Nation, Yaba</p>
+                <p>Celebrate with us as we exchange vows in a beautiful white wedding ceremony.</p>
+            </div>
+            
+            <div class="detail-card">
+                <div class="detail-icon">🎭</div>
+                <h3>Traditional Ceremony</h3>
+                <p><strong>Time:</strong> 2:00 pm</p>
+                <p><strong>Venue:</strong> Lagos, Nigeria</p>
+                <p>Join us for our traditional Nigerian wedding ceremony, celebrating our heritage and culture.</p>
+            </div>
+
+            <div class="detail-card">
+                <div class="detail-icon">🎉</div>
+                <h3>Reception</h3>
+                <p><strong>Time:</strong> 4:00 pm</p>
+                <p><strong>Venue:</strong> TBD</p>
+                <p>Dance the afternoon away with us as we celebrate our new beginning!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Aso-Ebi Section -->
+<section id="aso-ebi" class="aso-ebi">
+    <div class="container">
+        <h2 class="section-title">Aso-Ebi Information</h2>
+        <div class="aso-ebi-content">
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                Join us in celebrating our special day in our chosen Aso-Ebi colors. 
+            </p>
+        </div>
+        
+        <div class="color-guide">
+            <div class="color-card">
+                <div class="color-swatch white-swatch"></div>
+                <h3>Bride & Groom</h3>
+                <p><strong>You think we'd tell you?</strong></p>
+                <p>Reserved for the happy couple</p>
+            </div>
+            
+            <div class="color-card">
+                <div class="pink-swatch olive-green-swatch"></div>
+                <h3>General Attendees</h3>
+                <p><strong>Olive Green with Pink</strong></p>
+                <p>Come looking good!</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Registry Section -->
+<section id="registry" style="background: var(--light-gray);">
+    <div class="container">
+        <h2 class="section-title">Gift Registry</h2>
+        <div style="text-align: center; max-width: 1000px; margin: 0 auto;">
+            <p style="font-size: 1.2rem; margin-bottom: 3rem;">
+                Your presence at our wedding is the greatest gift of all. However, if you'd like to honor us with a gift, 
+                we've provided some options below to help guide you.
+            </p>
+            
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 2rem;">
+                <!-- Naira Column -->
+                <div style="background: var(--white); padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid var(--olive-green);">
+                    <h3 style="color: var(--olive-green); margin-bottom: 1rem;">💰 Nigerian Naira (₦)</h3>
+                    <p style="margin: 0.5rem 0 1.5rem; font-size: 0.9rem;">Bank details for Naira transfers</p>
+                    <div style="background: var(--mint-cream); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.9rem; text-align: left;">
+                        <strong>Account Name:</strong><br>Akinjobi Sodiq<br><br>
+                        <strong>Account Number:</strong><br>1221471215<br><br>
+                        <strong>Bank:</strong><br>Access Bank
+                    </div>
+                </div>
+                
+                <!-- USD Column -->
+                <div style="background: var(--white); padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid var(--sage-green);">
+                    <h3 style="color: var(--sage-green); margin-bottom: 1rem;">💵 US Dollars ($)</h3>
+                    <p style="margin: 0.5rem 0 1.5rem; font-size: 0.9rem;">International transfer details</p>
+                    <div style="background: var(--mint-cream); padding: 1rem; border-radius: 8px; font-family: monospace; font-size: 0.9rem; text-align: left;">
+                        <strong>Risevest:</strong><br>@mideyy_xx<br><br>
+                        <strong>Grey:</strong><br>@geektutor
+                    </div>
+                </div>
+                
+                <!-- Gift Registry Column -->
+                <div style="background: var(--white); padding: 2rem; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.1); border: 2px solid var(--forest-green);">
+                    <h3 style="color: var(--forest-green); margin-bottom: 1rem;">🎁 Gift Registry</h3>
+                    <p style="margin-bottom: 1.5rem; font-size: 0.9rem;">
+                        For those who prefer to give traditional gifts, we have a growing registry with items for our new home together.
+                    </p>
+                    
+                    <div style="margin: 2rem 0;">
+                        <a href="#" class="form-button" style="display: inline-block; font-size: 0.9rem; padding: 0.8rem 1.5rem;">View Our Registry</a>
+                    </div>
+                    
+                    <p style="font-size: 0.8rem; color: var(--dark-olive); font-style: italic; margin-top: 1rem;">
+                        Registry links will be updated with our preferred stores
+                    </p>
+                </div>
+            </div>
+            
+            <div style="background: var(--cream); padding: 1.5rem; border-radius: 15px; border-left: 4px solid var(--olive-green);">
+                <p style="margin: 0; font-style: italic; color: var(--dark-olive);">
+                    "The greatest gift is your presence with us on our special day. Any contribution towards our future together is deeply appreciated." 💕
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Photo Sharing Section -->
+<section id="photos" class="photo-sharing">
+    <div class="container">
+        <h2 class="section-title">Share Your Photos & Videos</h2>
+        <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+            Help us capture every beautiful moment! Share your photos and videos from our special day.
+        </p>
+        
+        <div class="photo-upload-area">
+            <div style="font-size: 3rem; margin-bottom: 1rem;">📸</div>
+            <h3>Upload to Our Shared Album</h3>
+            <p>Click the button below to access our Google Photos album where you can upload your pictures and videos from our wedding celebration.</p>
+        </div>
+        
+        <a href="#" class="form-button" onclick="openPhotoAlbum()">
+            📷 Access Photo Album
+        </a>
+    </div>
+</section>
+
+<!-- Contact Section -->
+<section id="contact">
+    <div class="container">
+        <h2 class="section-title">Contact Us</h2>
+        <div class="contact-grid">
+            <div class="contact-card">
+                <h3>Groom Side</h3>
+                <h4>Precious</h4>
+                <p><a href="https://wa.me/+2349021610260" target="_blank" style="color: var(--olive-green); text-decoration: none;">💬 +2349021610260</a></p>
+            </div>
+            
+            <div class="contact-card">
+                <h3>Bride Side</h3>
+                <h4>[Contact Name]</h4>
+                <p><a href="https://wa.me/+234" target="_blank" style="color: var(--olive-green); text-decoration: none;">💬 WhatsApp</a></p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="footer-hearts">💕 👰🏾 🤵🏾 💕</div>
+        <p>&copy; 2025 Ayomide & Olamilekan. Made with love for our special day.</p>
+        <p style="margin-top: 1rem; opacity: 0.8;">
+            "Two souls, one heart, forever united in love"
+        </p>
+    </div>
+</footer>
+
+<script>
+    // Gallery images array
+    const galleryImages = [
+        'https://i.ibb.co/TqtGmYVj/IMG-2656.jpg',
+        'https://i.ibb.co/ppcN2th/IMG-2943.jpg',
+        'https://i.ibb.co/DDGNL1Yw/IMG-2644.jpg',
+        'https://i.ibb.co/cKWytFW5/IMG-2853.jpg',
+        'https://i.ibb.co/Xxgzb3G2/IMG-2685.jpg',
+        'https://i.ibb.co/LzTCk8KX/IMG-2877.jpg'
+    ];
+
+    let currentImageIndex = 0;
+
+    // Open lightbox with specific image
+    function openLightbox(index) {
+        currentImageIndex = index;
+        document.getElementById('lightbox').classList.add('active');
+        document.getElementById('lightboxImg').src = galleryImages[currentImageIndex];
+        document.body.style.overflow = 'hidden';
+    }
+
+    // Close lightbox
+    function closeLightbox() {
+        document.getElementById('lightbox').classList.remove('active');
+        document.body.style.overflow = 'auto';
+    }
+
+    // Close lightbox when clicking on background
+    function closeLightboxOnBackground(event) {
+        if (event.target.id === 'lightbox') {
+            closeLightbox();
+        }
+    }
+
+    // Change photo in lightbox
+    function changePhoto(direction) {
+        currentImageIndex += direction;
+        
+        if (currentImageIndex >= galleryImages.length) {
+            currentImageIndex = 0;
+        } else if (currentImageIndex < 0) {
+            currentImageIndex = galleryImages.length - 1;
+        }
+        
+        document.getElementById('lightboxImg').src = galleryImages[currentImageIndex];
+    }
+
+    // Keyboard navigation for lightbox
+    document.addEventListener('keydown', function(e) {
+        if (document.getElementById('lightbox').classList.contains('active')) {
+            if (e.key === 'ArrowLeft') {
+                changePhoto(-1);
+            } else if (e.key === 'ArrowRight') {
+                changePhoto(1);
+            } else if (e.key === 'Escape') {
+                closeLightbox();
+            }
+        }
+    });
+
+    // Navbar scroll effect
+    window.addEventListener('scroll', function() {
+        const navbar = document.getElementById('navbar');
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        } else {
+            navbar.classList.remove('scrolled');
+        }
+    });
+
+    // Smooth scrolling for navigation links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function (e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                target.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start'
+                });
+            }
+        });
+    });
+
+    // Mobile menu toggle
+    const mobileMenu = document.querySelector('.mobile-menu');
+    const navLinks = document.querySelector('.nav-links');
+    
+    if (mobileMenu) {
+        mobileMenu.addEventListener('click', function() {
+            navLinks.classList.toggle('active');
+        });
+    }
+
+    function openPhotoAlbum() {
+        alert('Photo album link will be updated soon!');
+    }
+
+    // Intersection Observer for animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.style.opacity = '1';
+                entry.target.style.transform = 'translateY(0)';
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements for animation
+    document.addEventListener('DOMContentLoaded', function() {
+        const animateElements = document.querySelectorAll('.detail-card, .color-card, .contact-card, .gallery-item');
+        
+        animateElements.forEach(el => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+            observer.observe(el);
+        });
+    });
+
+    // Heart animation
+    function createHeart() {
+        const heart = document.createElement('div');
+        heart.innerHTML = '💕';
+        heart.style.position = 'fixed';
+        heart.style.left = Math.random() * 100 + 'vw';
+        heart.style.top = '100vh';
+        heart.style.fontSize = '20px';
+        heart.style.zIndex = '1000';
+        heart.style.pointerEvents = 'none';
+        heart.style.animation = 'heartFloat 3s ease-out forwards';
+        
+        document.body.appendChild(heart);
+        
+        setTimeout(() => {
+            heart.remove();
+        }, 3000);
+    }
+
+    // Add heart float animation
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes heartFloat {
+            to {
+                transform: translateY(-100vh) rotate(360deg);
+                opacity: 0;
+            }
+        }
+    `;
+    document.head.appendChild(style);
+
+    // Trigger hearts occasionally
+    setInterval(createHeart, 5000);
+</script>
+</body>
+</html>
