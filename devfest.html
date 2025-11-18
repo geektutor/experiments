@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Nok Head Hunter - Umuahia Game</title>
+    <title>The Nok Head Hunter - Lagos Game</title>
     
     <!-- Meta tags for social sharing (Open Graph & Twitter Cards) -->
-    <meta name="description" content="Tap the ancient Nok Head as fast as you can to score points! A fun click game for DevFest Kaduna, celebrating the ancient Nok culture.">
+    <meta name="description" content="Tap the ancient Nok Head as fast as you can to score points! A fun click game for DevFest Lagos, celebrating the ancient Nok culture.">
 
     <!-- Open Graph (Facebook, LinkedIn) -->
-    <meta property="og:title" content="The Nok Head Hunter - DevFest Umuahia Game">
-    <meta property="og:description" content="Tap the ancient Nok Head as fast as you can to score points! A fun click game for DevFest Kaduna, celebrating the ancient Nok culture.">
+    <meta property="og:title" content="The Nok Head Hunter - DevFest Lagos Game">
+    <meta property="og:description" content="Tap the ancient Nok Head as fast as you can to score points! A fun click game for DevFest Lagos, celebrating the ancient Nok culture.">
     <meta property="og:image" content="https://i.ibb.co/N6j064Vf/Nok-Head.jpg">
     <meta property="og:url" content="https://shorturl.at/uKooz">
     <meta property="og:type" content="game">
@@ -18,8 +18,8 @@
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:site" content="@geektutor">
-    <meta name="twitter:title" content="The Nok Head Hunter - DevFest Umuahia Game">
-    <meta name="twitter:description" content="Tap the ancient Nok Head as fast as you can to score points! A fun click game for DevFest Kaduna, celebrating the ancient Nok culture.">
+    <meta name="twitter:title" content="The Nok Head Hunter - DevFest Lagos Game">
+    <meta name="twitter:description" content="Tap the ancient Nok Head as fast as you can to score points! A fun click game for DevFest Lagos, celebrating the ancient Nok culture.">
     <meta name="twitter:image" content="https://i.ibb.co/N6j064Vf/Nok-Head.jpg">
 
     <!-- Load Tailwind CSS -->
@@ -164,14 +164,14 @@
             <p>Nok art was created by the ancient Nok people of present-day <span class="font-semibold">Kaduna State, Nigeria</span> — particularly around the Nok village area where the first artifacts were discovered. <a href="https://en.wikipedia.org/wiki/Nok_culture" target="_blank" class="text-blue-600 hover:text-blue-800 underline font-medium">Learn more on Wikipedia</a>.</p>
         </div>
 
-        <p class="text-center text-xs text-gray-400 mt-4">Made for DevFest Umuahia</p>
+        <p class="text-center text-xs text-gray-400 mt-4">Made for DevFest Lagos</p>
 
     </div>
 
     <script type="module">
         // ===== CONFIGURATION =====
         // Replace this with your Google Apps Script Web App URL
-        const GOOGLE_SCRIPT_URL = 'YOUR_GOOGLE_APPS_SCRIPT_URL_HERE';
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwsLX9T4Vnk0Fxib5neYxiWXZPDDoNsTtHCgVfwpIgSbrDuidrRg8PsF7T3wYew8ZJwHg/exec';
         
         const GAME_DURATION = 10; // seconds
         let playerNickname = '';
@@ -318,7 +318,7 @@
         }
 
         function handleShare() {
-            const tweetText = encodeURIComponent(`I'm ${playerNickname} and I scored ${score} points in the Nok Head Hunter game at #DevFestUmuahia! Can you beat me? shorturl.at/uKooz`);
+            const tweetText = encodeURIComponent(`I'm ${playerNickname} and I scored ${score} points in the Nok Head Hunter game at #DevFestLagos! Can you beat me? shorturl.at/uKooz`);
             const tweetURL = `https://twitter.com/intent/tweet?text=${tweetText}&via=geektutor`;
             
             window.open(tweetURL, '_blank');
