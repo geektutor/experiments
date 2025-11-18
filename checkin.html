@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>DevFest Lagos 2025 - Check-In</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            -webkit-touch-callout: none;
+            -webkit-user-select: none;
+            user-select: none;
+        }
+        input, textarea {
+            -webkit-user-select: text;
+            user-select: text;
+        }
+    </style>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen">
+    <div id="app" class="p-4 max-w-2xl mx-auto"></div>
+
+    <script>
+        const App = {
+            data: {
+                ticketId: '',
+                attendees: [],
+                checkInLog: [],
+                searchResult: null,
+                selectedDay: 'tue',
+                isOnline: navigator.onLine,
+                stats: { total: 0, checkedIn: 0, remaining: 0 }
+            },
+            
+            days: [
+                { id: 'tue', label: 'Tuesday', date: 'Nov 18' },
+                { id: 'wed', label: 'Wednesday', date: 'Nov 19' },
+                { id: 'thurs', label: 'Thursday', date: 'Nov 20' },
+                { id: 'fri', label: 'Friday', date: 'Nov 21' },
+                { id: 'sat', label: 'Saturday', date: 'Nov 22' }
+            ],
+
+            init() {
+                this.loadData();
+                this.updateStats();
+                this.render();
+                this.setupEventListeners();
+                
+                // Auto-select current day
+                const today = new Date('2025-11-18'); // Start date
+                const currentDate = new Date();
+                const diffDays = Math.floor((currentDate - today) / (1000 * 60 * 60 * 24));
+                
+                if (diffDays >= 0 && diffDays < this.days.length) {
+                    this.data.selectedDay = this.days[diffDays].id;
+                }
+                
+                this.render();
+            },
+
+            loadData() {
+                const savedAttendees = localStorage.getItem('devfest_attendees');
+                const savedCheckIns = localStorage.getItem('devfest_checkins');
+                
+                if (savedAttendees) {
+                    this.data.attendees = JSON.parse(savedAttendees);
+                }
+                if (savedCheckIns) {
+                    this.data.checkInLog = JSON.parse(savedCheckIns);
+                }
+            },
+
+            updateStats() {
+                const { attendees, checkInLog, selectedDay } = this.data;
+                const todayAttendees = attendees.filter(a => a.ticket_day === selectedDay);
+                const todayCheckIns = checkInLog.filter(c => c.day === selectedDay);
+                
+                this.data.stats = {
+                    total: todayAttendees.length,
+                    checkedIn: todayCheckIns.length,
+                    remaining: todayAttendees.length - todayCheckIns.length
+                };
+            },
+
+            handleImportData(jsonData) {
+                try {
+                    const parsed = JSON.parse(jsonData);
+                    this.data.attendees = parsed;
+                    localStorage.setItem('devfest_attendees', jsonData);
+                    alert(`✅ Successfully imported ${parsed.length} attendees!`);
+                    this.updateStats();
+                    this.render();
+                } catch (error) {
+                    alert('❌ Error importing data. Please ensure it\'s valid JSON.');
+                }
+            },
+
+            handleCheckIn() {
+                const searchId = this.data.ticketId.trim().toUpperCase();
+                
+                if (!searchId) {
+                    alert('Please enter a Ticket ID');
+                    return;
+                }
+
+                const attendee = this.data.attendees.find(a => 
+                    a.id.toUpperCase() === searchId && a.ticket_day === this.data.selectedDay
+                );
+
+                if (!attendee) {
+                    const dayLabel = this.days.find(d => d.id === this.data.selectedDay)?.label;
+                    this.data.searchResult = {
+                        success: false,
+                        message: `Ticket ${searchId} not found for ${dayLabel}`,
+                        ticketId: searchId
+                    };
+                    this.render();
+                    return;
+                }
+
+                const alreadyCheckedIn = this.data.checkInLog.some(c => 
+                    c.ticketId === searchId && c.day === this.data.selectedDay
+                );
+
+                if (alreadyCheckedIn) {
+                    this.data.searchResult = {
+                        success: false,
+                        message: 'Already checked in!',
+                        attendee,
+                        duplicate: true
+                    };
+                    this.render();
+                    return;
+                }
+
+                const checkIn = {
+                    ticketId: searchId,
+                    day: this.data.selectedDay,
+                    name: attendee.fullname || 'N/A',
+                    email: attendee.email,
+                    timestamp: new Date().toISOString(),
+                    ticketType: attendee.ticket_type
+                };
+
+                this.data.checkInLog.push(checkIn);
+                localStorage.setItem('devfest_checkins', JSON.stringify(this.data.checkInLog));
+
+                this.data.searchResult = {
+                    success: true,
+                    message: 'Check-in successful! ✅',
+                    attendee,
+                    checkIn
+                };
+
+                this.data.ticketId = '';
+                this.updateStats();
+                this.render();
+
+                // Clear result after 3 seconds
+                setTimeout(() => {
+                    this.data.searchResult = null;
+                    this.render();
+                }, 3000);
+            },
+
+            handleExport() {
+                const dataStr = JSON.stringify(this.data.checkInLog, null, 2);
+                const blob = new Blob([dataStr], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = `devfest-checkins-${this.data.selectedDay}-${new Date().toISOString().split('T')[0]}.json`;
+                link.click();
+            },
+
+            selectDay(dayId) {
+                this.data.selectedDay = dayId;
+                this.data.searchResult = null;
+                this.updateStats();
+                this.render();
+            },
+
+            setupEventListeners() {
+                window.addEventListener('online', () => {
+                    this.data.isOnline = true;
+                    this.render();
+                });
+                window.addEventListener('offline', () => {
+                    this.data.isOnline = false;
+                    this.render();
+                });
+            },
+
+            render() {
+                const app = document.getElementById('app');
+                app.innerHTML = `
+                    <!-- Header -->
+                    <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+                        <div class="flex items-center justify-between mb-2">
+                            <h1 class="text-3xl font-bold text-blue-600">DevFest Lagos 2025</h1>
+                            <div class="flex items-center gap-2">
+                                <svg class="w-5 h-5 ${this.data.isOnline ? 'text-green-500' : 'text-orange-500'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    ${this.data.isOnline ? 
+                                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.111 16.404a5.5 5.5 0 017.778 0M12 20h.01m-7.08-7.071c3.904-3.905 10.236-3.905 14.141 0M1.394 9.393c5.857-5.857 15.355-5.857 21.213 0"></path>' :
+                                        '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636a9 9 0 010 12.728m0 0l-2.829-2.829m2.829 2.829L21 21M15.536 8.464a5 5 0 010 7.072m0 0l-2.829-2.829m-4.243 2.829a4.978 4.978 0 01-1.414-2.83m-1.414 5.658a9 9 0 01-2.167-9.238m7.824 2.167a1 1 0 111.414 1.415m-1.414-1.415L3 3"></path>'
+                                    }
+                                </svg>
+                                <span class="text-sm text-gray-600">${this.data.isOnline ? 'Online' : 'Offline'}</span>
+                            </div>
+                        </div>
+                        <p class="text-gray-600">Attendee Check-In System</p>
+                    </div>
+
+                    <!-- Day Selection -->
+                    <div class="bg-white rounded-lg shadow-lg p-4 mb-4">
+                        <h2 class="text-lg font-semibold mb-3 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                            </svg>
+                            Select Day
+                        </h2>
+                        <div class="grid grid-cols-2 md:grid-cols-5 gap-2">
+                            ${this.days.map(day => `
+                                <button onclick="App.selectDay('${day.id}')" class="p-3 rounded-lg font-medium transition-all ${
+                                    this.data.selectedDay === day.id
+                                        ? 'bg-blue-600 text-white shadow-md'
+                                        : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                                }">
+                                    <div class="text-sm">${day.label}</div>
+                                    <div class="text-xs opacity-80">${day.date}</div>
+                                </button>
+                            `).join('')}
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="grid grid-cols-3 gap-4 mb-4">
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="text-2xl font-bold text-blue-600">${this.data.stats.total}</div>
+                            <div class="text-sm text-gray-600">Expected</div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="text-2xl font-bold text-green-600">${this.data.stats.checkedIn}</div>
+                            <div class="text-sm text-gray-600">Checked In</div>
+                        </div>
+                        <div class="bg-white rounded-lg shadow p-4">
+                            <div class="text-2xl font-bold text-orange-600">${this.data.stats.remaining}</div>
+                            <div class="text-sm text-gray-600">Remaining</div>
+                        </div>
+                    </div>
+
+                    <!-- Check-In Form -->
+                    <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+                        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            Check In Attendee
+                        </h2>
+                        
+                        <div class="flex gap-2 mb-4">
+                            <input
+                                id="ticketInput"
+                                type="text"
+                                value="${this.data.ticketId}"
+                                placeholder="Enter Ticket ID (e.g., DF25ABC123)"
+                                class="flex-1 px-4 py-3 border-2 border-gray-300 rounded-lg focus:border-blue-500 focus:outline-none text-lg font-mono uppercase"
+                                autofocus
+                            />
+                            <button
+                                onclick="App.handleCheckIn()"
+                                class="px-6 py-3 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors active:scale-95"
+                            >
+                                Check In
+                            </button>
+                        </div>
+
+                        ${this.data.searchResult ? `
+                            <div class="p-4 rounded-lg border-2 ${
+                                this.data.searchResult.success 
+                                    ? 'bg-green-50 border-green-500' 
+                                    : this.data.searchResult.duplicate
+                                    ? 'bg-yellow-50 border-yellow-500'
+                                    : 'bg-red-50 border-red-500'
+                            }">
+                                <div class="flex items-start gap-3">
+                                    <svg class="w-6 h-6 flex-shrink-0 ${
+                                        this.data.searchResult.success ? 'text-green-600' : 
+                                        this.data.searchResult.duplicate ? 'text-yellow-600' : 'text-red-600'
+                                    }" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        ${this.data.searchResult.success ? 
+                                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>' :
+                                            '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path>'
+                                        }
+                                    </svg>
+                                    <div class="flex-1">
+                                        <div class="font-semibold text-lg mb-1">${this.data.searchResult.message}</div>
+                                        ${this.data.searchResult.attendee ? `
+                                            <div class="text-sm space-y-1">
+                                                <div><strong>Name:</strong> ${this.data.searchResult.attendee.fullname || 'N/A'}</div>
+                                                <div><strong>Email:</strong> ${this.data.searchResult.attendee.email}</div>
+                                                <div><strong>Ticket:</strong> ${this.data.searchResult.attendee.ticket_type?.toUpperCase()}</div>
+                                                ${this.data.searchResult.checkIn ? `
+                                                    <div class="text-xs text-gray-600 mt-2">
+                                                        Checked in at ${new Date(this.data.searchResult.checkIn.timestamp).toLocaleTimeString()}
+                                                    </div>
+                                                ` : ''}
+                                            </div>
+                                        ` : ''}
+                                    </div>
+                                </div>
+                            </div>
+                        ` : ''}
+                    </div>
+
+                    <!-- Data Management -->
+                    <div class="bg-white rounded-lg shadow-lg p-6 mb-4">
+                        <h2 class="text-xl font-semibold mb-4 flex items-center gap-2">
+                            <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+                            </svg>
+                            Data Management
+                        </h2>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">
+                                    Import Attendee Data (JSON)
+                                </label>
+                                <textarea
+                                    id="importData"
+                                    placeholder='[{"id":"DF25ABC","fullname":"John Doe","email":"john@email.com","ticket_day":"tue","ticket_type":"standard"}]'
+                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg text-sm font-mono"
+                                    rows="4"
+                                ></textarea>
+                                <button
+                                    onclick="const data = document.getElementById('importData').value; if(data.trim()) { App.handleImportData(data); document.getElementById('importData').value = ''; }"
+                                    class="mt-2 w-full px-4 py-2 bg-blue-600 text-white rounded-lg font-semibold hover:bg-blue-700 transition-colors"
+                                >
+                                    Import Data
+                                </button>
+                            </div>
+
+                            <button
+                                onclick="App.handleExport()"
+                                ${this.data.checkInLog.length === 0 ? 'disabled' : ''}
+                                class="w-full px-4 py-2 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors flex items-center justify-center gap-2"
+                            >
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+                                </svg>
+                                Export Check-Ins (${this.data.checkInLog.length})
+                            </button>
+
+                            <div class="text-xs text-gray-500 mt-2">
+                                <strong>Note:</strong> Data is stored locally in your browser. Export regularly to backup.
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Check-Ins -->
+                    ${this.data.checkInLog.filter(c => c.day === this.data.selectedDay).length > 0 ? `
+                        <div class="bg-white rounded-lg shadow-lg p-6">
+                            <h2 class="text-xl font-semibold mb-4">
+                                Recent Check-Ins (${this.days.find(d => d.id === this.data.selectedDay)?.label})
+                            </h2>
+                            <div class="space-y-2 max-h-60 overflow-y-auto">
+                                ${this.data.checkInLog
+                                    .filter(c => c.day === this.data.selectedDay)
+                                    .reverse()
+                                    .slice(0, 10)
+                                    .map(checkIn => `
+                                        <div class="p-3 bg-gray-50 rounded-lg text-sm">
+                                            <div class="font-semibold">${checkIn.name}</div>
+                                            <div class="text-gray-600 text-xs">
+                                                ${checkIn.ticketId} • ${checkIn.ticketType?.toUpperCase()} • ${new Date(checkIn.timestamp).toLocaleTimeString()}
+                                            </div>
+                                        </div>
+                                    `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+                `;
+
+                // Re-attach input event listener
+                const input = document.getElementById('ticketInput');
+                if (input) {
+                    input.addEventListener('input', (e) => {
+                        this.data.ticketId = e.target.value.toUpperCase();
+                    });
+                    input.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') {
+                            this.handleCheckIn();
+                        }
+                    });
+                    input.focus();
+                }
+            }
+        };
+
+        // Initialize app when DOM is ready
+        document.addEventListener('DOMContentLoaded', () => {
+            App.init();
+        });
+    </script>
+</body>
+</html>
