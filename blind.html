@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>DevFest Blind Timer</title>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #0d1117; --text: #c9d1d9; 
+            --green: #3fb950; --red: #f85149; --blue: #58a6ff;
+            --border: #30363d;
+        }
+        body {
+            font-family: 'JetBrains Mono', monospace;
+            background-color: var(--bg); color: var(--text);
+            text-align: center; margin: 0; height: 100vh;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            overflow: hidden;
+        }
+        /* UI Elements */
+        .screen { display: none; width: 100%; max-width: 400px; padding: 20px; }
+        .active { display: flex; flex-direction: column; align-items: center; }
+        
+        h1 { color: var(--blue); margin-bottom: 5px; }
+        p { font-size: 0.9rem; color: #8b949e; margin-bottom: 30px; }
+
+        input {
+            background: #010409; border: 1px solid var(--border);
+            color: var(--green); padding: 15px; font-family: inherit;
+            font-size: 1.2rem; width: 80%; text-align: center;
+            border-radius: 6px; margin-bottom: 20px; outline: none;
+        }
+
+        .btn {
+            padding: 15px 40px; font-family: inherit; font-size: 1.2rem;
+            font-weight: bold; border: none; border-radius: 6px;
+            cursor: pointer; width: 80%; text-transform: uppercase;
+            transition: 0.2s;
+        }
+        .btn-primary { background: var(--green); color: #fff; }
+        .btn-danger { background: var(--red); color: #fff; }
+        .btn:active { opacity: 0.8; transform: scale(0.98); }
+
+        /* The Game Timer */
+        .timer-box {
+            font-size: 4rem; margin: 40px 0; font-weight: bold;
+            height: 80px; display: flex; align-items: center; justify-content: center;
+        }
+        .blind { color: var(--border); } /* Color when numbers vanish */
+
+        /* Leaderboard */
+        .leaderboard-box {
+            background: #161b22; border: 1px solid var(--border);
+            width: 100%; border-radius: 6px; padding: 10px;
+            margin-bottom: 20px;
+        }
+        li {
+            display: flex; justify-content: space-between;
+            padding: 8px; border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+        li:last-child { border-bottom: none; }
+        li span:first-child { color: var(--blue); }
+        li strong { color: var(--green); }
+
+        .target-info {
+            background: #1f2428; padding: 10px; border-radius: 4px;
+            margin-bottom: 20px; border: 1px solid var(--border);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: LOGIN -->
+    <div id="screen-login" class="screen active">
+        <h1>&lt;Blind_Timer /&gt;</h1>
+        <p>Target: Exactly 5.000 seconds.<br>Timer hides after 2s.</p>
+        
+        <input type="text" id="username" placeholder="git config user.name" maxlength="12">
+        <button class="btn btn-primary" onclick="startGame()">INIT_GAME()</button>
+    </div>
+
+    <!-- SCREEN 2: GAME -->
+    <div id="screen-game" class="screen">
+        <div class="target-info">TARGET: 5.000s</div>
+        
+        <div id="display" class="timer-box">0.000</div>
+        
+        <!-- Single button changes function -->
+        <button id="actionBtn" class="btn btn-primary" onclick="handleAction()">START</button>
+    </div>
+
+    <!-- SCREEN 3: RESULT -->
+    <div id="screen-result" class="screen">
+        <h1 id="result-title">NICE TRY</h1>
+        <div class="timer-box" id="final-time" style="color:var(--green)">5.042</div>
+        <p>Difference: <span id="final-diff">0.042</span>s</p>
+
+        <div class="leaderboard-box">
+            <div style="padding:5px; border-bottom:1px solid var(--border); color:#8b949e">TOP KERNELS</div>
+            <ul id="leaderboard-list" style="list-style:none; padding:0; margin:0;">
+                <li style="justify-content:center;">Loading data...</li>
+            </ul>
+        </div>
+
+        <button class="btn btn-primary" onclick="resetGame()">git reset --hard</button>
+    </div>
+
+    <script>
+        const SCRIPT_URL = 'YOUR_GOOGLE_SCRIPT_URL_HERE'; // <--- PASTE URL HERE
+
+        let startTime;
+        let timerInterval;
+        let isRunning = false;
+        let name = "";
+        const TARGET = 5000; // 5 seconds in ms
+
+        function startGame() {
+            name = document.getElementById('username').value.trim();
+            if (!name) return alert("Identify yourself, dev.");
+            switchScreen('screen-game');
+            resetGameUI();
+        }
+
+        function handleAction() {
+            const btn = document.getElementById('actionBtn');
+            if (!isRunning) {
+                // START
+                isRunning = true;
+                startTime = Date.now();
+                btn.innerText = "STOP";
+                btn.className = "btn btn-danger";
+                
+                timerInterval = setInterval(updateTimer, 37); // ~30fps
+            } else {
+                // STOP
+                stopGame();
+            }
+        }
+
+        function updateTimer() {
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const display = document.getElementById('display');
+
+            if (elapsed < 2000) {
+                // Show time normally
+                display.innerText = (elapsed / 1000).toFixed(3);
+                display.classList.remove('blind');
+            } else {
+                // BLIND MODE
+                display.innerText = "?.???";
+                display.classList.add('blind');
+            }
+        }
+
+        function stopGame() {
+            clearInterval(timerInterval);
+            isRunning = false;
+            
+            const now = Date.now();
+            const elapsed = now - startTime;
+            const diff = Math.abs(elapsed - TARGET);
+            
+            showResult(elapsed, diff);
+        }
+
+        function showResult(elapsed, diff) {
+            switchScreen('screen-result');
+            
+            const elapsedSec = (elapsed / 1000).toFixed(3);
+            const diffSec = (diff / 1000).toFixed(3);
+
+            document.getElementById('final-time').innerText = elapsedSec + "s";
+            document.getElementById('final-diff').innerText = diffSec;
+
+            // Flavour text based on accuracy
+            const title = document.getElementById('result-title');
+            if (diff < 50) title.innerText = "LEGENDARY!";
+            else if (diff < 200) title.innerText = "SENIOR DEV";
+            else if (diff < 500) title.innerText = "JUNIOR DEV";
+            else title.innerText = "INTERN?";
+
+            saveScore(elapsedSec, diffSec);
+        }
+
+        function saveScore(stoppedAt, diff) {
+            fetch(SCRIPT_URL, {
+                method: 'POST',
+                body: JSON.stringify({ name: name, stoppedAt: stoppedAt, diff: diff })
+            })
+            .then(() => fetchLeaderboard())
+            .catch(err => console.error(err));
+        }
+
+        function fetchLeaderboard() {
+            fetch(SCRIPT_URL)
+            .then(res => res.json())
+            .then(data => {
+                const list = document.getElementById('leaderboard-list');
+                let html = '';
+                data.forEach(p => {
+                    // Format difference to look like code: 0.042
+                    let d = parseFloat(p.diff).toFixed(3);
+                    html += `<li><span>${escapeHtml(p.name)}</span> <strong>${d}s</strong></li>`;
+                });
+                list.innerHTML = html;
+            });
+        }
+
+        function resetGame() {
+            switchScreen('screen-game');
+            resetGameUI();
+        }
+
+        function resetGameUI() {
+            document.getElementById('display').innerText = "0.000";
+            document.getElementById('display').classList.remove('blind');
+            const btn = document.getElementById('actionBtn');
+            btn.innerText = "START";
+            btn.className = "btn btn-primary";
+            isRunning = false;
+        }
+
+        function switchScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        function escapeHtml(text) {
+            return text.replace(/[&<>"']/g, function(m) {
+                return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m];
+            });
+        }
+    </script>
+</body>
+</html>
