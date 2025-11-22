@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Tic-Tac-Toe & Sheets</title>
+  <style>
+    body { font-family: sans-serif; text-align: center; background: #f0f0f0; padding: 20px; }
+    .container { max-width: 400px; margin: auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+    input, select { padding: 10px; margin: 5px; width: 80%; border: 1px solid #ccc; border-radius: 5px; }
+    button { padding: 10px 20px; margin-top: 10px; cursor: pointer; background: #28a745; color: white; border: none; border-radius: 5px; font-size: 16px; }
+    button:hover { background: #218838; }
+    
+    /* Game Board */
+    #game-board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 5px; margin-top: 20px; display: none; }
+    .cell { width: 100px; height: 100px; background: #ddd; display: flex; align-items: center; justify-content: center; font-size: 3em; cursor: pointer; font-weight: bold; }
+    .cell:hover { background: #ccc; }
+    .win { background: #90ee90; }
+    
+    #status { margin-top: 15px; font-size: 1.2em; font-weight: bold; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h2>Tic-Tac-Toe</h2>
+
+  <!-- Setup Section -->
+  <div id="setup">
+    <input type="text" id="p1" placeholder="Player 1 Name">
+    <select id="p1-choice">
+      <option value="X">Plays X</option>
+      <option value="O">Plays O</option>
+    </select>
+    <br>
+    <input type="text" id="p2" placeholder="Player 2 Name">
+    <button onclick="startGame()">Start Game</button>
+  </div>
+
+  <!-- Game Section -->
+  <div id="game-area" class="hidden">
+    <div id="status">Turn: Player 1</div>
+    <div id="game-board">
+      <div class="cell" onclick="move(0)"></div>
+      <div class="cell" onclick="move(1)"></div>
+      <div class="cell" onclick="move(2)"></div>
+      <div class="cell" onclick="move(3)"></div>
+      <div class="cell" onclick="move(4)"></div>
+      <div class="cell" onclick="move(5)"></div>
+      <div class="cell" onclick="move(6)"></div>
+      <div class="cell" onclick="move(7)"></div>
+      <div class="cell" onclick="move(8)"></div>
+    </div>
+    <button onclick="location.reload()" class="hidden" id="reset-btn">New Game</button>
+  </div>
+</div>
+
+<script>
+  // PASTE YOUR GOOGLE WEB APP URL HERE
+  const scriptURL = 'https://script.google.com/macros/s/AKfycbxFHFf5Az5o1T1XIlG4G33Xj6EtZt_oEy5Src1_sQN1btYhpv8Np0O9MBWp3CiBWKvGEw/exec';
+
+  let board = ["", "", "", "", "", "", "", "", ""];
+  let currentPlayer, p1Name, p2Name, p1Sym, p2Sym, turn;
+  let gameActive = false;
+
+  function startGame() {
+    p1Name = document.getElementById('p1').value || "Player 1";
+    p2Name = document.getElementById('p2').value || "Player 2";
+    p1Sym = document.getElementById('p1-choice').value;
+    p2Sym = (p1Sym === "X") ? "O" : "X";
+
+    currentPlayer = p1Sym; 
+    turn = p1Name;
+    gameActive = true;
+
+    document.getElementById('setup').classList.add('hidden');
+    document.getElementById('game-area').classList.remove('hidden');
+    document.getElementById('game-board').style.display = 'grid';
+    updateStatus();
+  }
+
+  function move(index) {
+    if (board[index] !== "" || !gameActive) return;
+
+    board[index] = currentPlayer;
+    document.getElementsByClassName('cell')[index].innerText = currentPlayer;
+
+    if (checkWin()) {
+      endGame(false);
+    } else if (!board.includes("")) {
+      endGame(true); // Draw
+    } else {
+      currentPlayer = (currentPlayer === "X") ? "O" : "X";
+      turn = (currentPlayer === p1Sym) ? p1Name : p2Name;
+      updateStatus();
+    }
+  }
+
+  function updateStatus() {
+    document.getElementById('status').innerText = `${turn}'s Turn (${currentPlayer})`;
+  }
+
+  function checkWin() {
+    const conditions = [
+      [0,1,2], [3,4,5], [6,7,8], // Rows
+      [0,3,6], [1,4,7], [2,5,8], // Cols
+      [0,4,8], [2,4,6]           // Diagonals
+    ];
+    
+    for (let condition of conditions) {
+      let [a, b, c] = condition;
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  function endGame(isDraw) {
+    gameActive = false;
+    let winnerName = isDraw ? "Draw" : turn;
+    document.getElementById('status').innerText = isDraw ? "It's a Draw!" : `${winnerName} Wins!`;
+    document.getElementById('reset-btn').classList.remove('hidden');
+    
+    sendToSheet(winnerName);
+  }
+
+  function sendToSheet(winner) {
+    if(!scriptURL.includes("http")) { alert("Please set the scriptURL in the code!"); return; }
+
+    const data = {
+      player1: p1Name, choice1: p1Sym,
+      player2: p2Name, choice2: p2Sym,
+      winner: winner
+    };
+
+    // Use no-cors mode to avoid CORS errors when sending data to Google
+    fetch(scriptURL, {
+      method: 'POST',
+      mode: 'no-cors', 
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    }).then(() => {
+      console.log("Data sent to sheet");
+    }).catch(err => console.error("Error:", err));
+  }
+</script>
+
+</body>
+</html>
