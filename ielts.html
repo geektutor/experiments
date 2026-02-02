@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IELTS Practice Test</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .timer-section {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 20px;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+        }
+
+        .timer {
+            font-size: 2em;
+            font-weight: bold;
+            font-family: 'Courier New', monospace;
+        }
+
+        .timer.warning {
+            color: #ff6b6b;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.6; }
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            display: none;
+        }
+
+        .section.active {
+            display: block;
+        }
+
+        .section-header {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section-header h2 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .question {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+        }
+
+        .question-number {
+            color: #667eea;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .option:hover {
+            border-color: #667eea;
+            transform: translateX(5px);
+        }
+
+        .option input[type="radio"] {
+            cursor: pointer;
+        }
+
+        input[type="text"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus, textarea:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            min-height: 200px;
+            resize: vertical;
+        }
+
+        .passage {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            line-height: 1.8;
+            border: 2px solid #e0e0e0;
+        }
+
+        .passage h3 {
+            color: #667eea;
+            margin-bottom: 15px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1em;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 20px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .navigation {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 30px;
+        }
+
+        .audio-player {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+        .results {
+            text-align: center;
+        }
+
+        .score {
+            font-size: 3em;
+            color: #667eea;
+            font-weight: bold;
+            margin: 30px 0;
+        }
+
+        .band-score {
+            font-size: 2em;
+            color: #764ba2;
+            margin: 20px 0;
+        }
+
+        .word-count {
+            text-align: right;
+            color: #666;
+            margin-top: 10px;
+            font-size: 0.9em;
+        }
+
+        .instructions {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+
+        .recording-indicator {
+            display: inline-block;
+            width: 12px;
+            height: 12px;
+            background: #ff6b6b;
+            border-radius: 50%;
+            animation: blink 1s infinite;
+            margin-right: 8px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>IELTS Practice Test</h1>
+            <p>Half-Length Format: 75 Minutes Total</p>
+            <div class="timer-section">
+                <div>
+                    <div style="font-size: 0.9em; margin-bottom: 5px;">Section Timer</div>
+                    <div class="timer" id="sectionTimer">--:--</div>
+                </div>
+                <div>
+                    <div style="font-size: 0.9em; margin-bottom: 5px;">Total Time</div>
+                    <div class="timer" id="totalTimer">75:00</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="content">
+            <!-- Start Screen -->
+            <div class="section active" id="startScreen">
+                <div class="section-header">
+                    <h2>Welcome to Your IELTS Practice Test</h2>
+                    <p>This test includes all four sections:</p>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin: 30px 0;">
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #667eea;">Listening</h3>
+                        <p>20 questions</p>
+                        <p>15 minutes</p>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #667eea;">Reading</h3>
+                        <p>20 questions</p>
+                        <p>30 minutes</p>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #667eea;">Writing</h3>
+                        <p>1 task</p>
+                        <p>20 minutes</p>
+                    </div>
+                    <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; text-align: center;">
+                        <h3 style="color: #667eea;">Speaking</h3>
+                        <p>1 part</p>
+                        <p>10 minutes</p>
+                    </div>
+                </div>
+                <div class="instructions">
+                    <strong>Instructions:</strong>
+                    <ul style="margin-left: 20px; margin-top: 10px;">
+                        <li>Complete all sections in order</li>
+                        <li>Each section is timed - timer starts automatically</li>
+                        <li><strong>Listening section:</strong> Click "Play Audio" to hear the conversation (uses text-to-speech)</li>
+                        <li>Answer all questions to the best of your ability</li>
+                        <li>You cannot go back once a section is complete</li>
+                    </ul>
+                </div>
+                <button class="btn" onclick="startTest()">Start Test</button>
+            </div>
+
+            <!-- Listening Section -->
+            <div class="section" id="listeningSection">
+                <div class="section-header">
+                    <h2>Part 1: Listening (15 minutes)</h2>
+                    <p>Listen to the audio and answer questions 1-20</p>
+                </div>
+
+                <div class="audio-player">
+                    <p style="margin-bottom: 15px;"><strong>Listening Audio</strong></p>
+                    <div style="display: flex; gap: 15px; justify-content: center; align-items: center; flex-wrap: wrap;">
+                        <button class="btn" id="playAudioBtn" onclick="playListeningAudio()" style="margin: 0;">
+                            🔊 Play Audio
+                        </button>
+                        <button class="btn" id="pauseAudioBtn" onclick="pauseAudio()" style="margin: 0; display: none;">
+                            ⏸️ Pause
+                        </button>
+                        <button class="btn" id="replayAudioBtn" onclick="replayAudio()" style="margin: 0; display: none;">
+                            🔄 Replay
+                        </button>
+                    </div>
+                    <div id="audioStatus" style="margin-top: 15px; font-style: italic; color: #666;"></div>
+                    <div id="audioProgress" style="width: 100%; height: 8px; background: #e0e0e0; border-radius: 4px; margin-top: 15px; overflow: hidden; display: none;">
+                        <div id="audioProgressBar" style="width: 0%; height: 100%; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: width 0.3s;"></div>
+                    </div>
+                </div>
+
+                <div class="passage" id="listeningTranscript" style="display: none;">
+                    <h3>Section 1: Holiday Booking</h3>
+                    <p><em>Transcript (visible after audio starts):</em></p>
+                    <p style="margin-top: 15px;">
+                        <strong>Agent:</strong> Good morning, Sun Travel Agency. How may I help you?<br>
+                        <strong>Customer:</strong> Hi, I'd like to book a holiday to Greece for my family.<br>
+                        <strong>Agent:</strong> Certainly. When would you like to travel?<br>
+                        <strong>Customer:</strong> We're looking at the second week of August.<br>
+                        <strong>Agent:</strong> That's a popular time. How many people will be traveling?<br>
+                        <strong>Customer:</strong> Four people - two adults and two children, aged 8 and 12.<br>
+                        <strong>Agent:</strong> Great. We have an excellent package to Crete. It includes a beachfront hotel with a pool and breakfast. The total cost is £2,400.<br>
+                        <strong>Customer:</strong> That sounds good. Does it include flights?<br>
+                        <strong>Agent:</strong> Yes, return flights from London Heathrow are included.
+                    </p>
+                </div>
+
+                <div id="listeningQuestions"></div>
+            </div>
+
+            <!-- Reading Section -->
+            <div class="section" id="readingSection">
+                <div class="section-header">
+                    <h2>Part 2: Reading (30 minutes)</h2>
+                    <p>Read the passage and answer questions 1-20</p>
+                </div>
+
+                <div class="passage">
+                    <h3>The Impact of Artificial Intelligence on Modern Workplaces</h3>
+                    <p>
+                        Artificial Intelligence (AI) is revolutionizing the modern workplace in unprecedented ways. From automation of routine tasks to advanced data analysis, AI technologies are transforming how businesses operate and how employees perform their jobs. This transformation brings both opportunities and challenges that organizations must navigate carefully.
+                    </p>
+                    <p>
+                        One of the most significant impacts of AI is the automation of repetitive tasks. Machine learning algorithms can now handle data entry, basic customer service inquiries, and even some aspects of financial analysis. This automation frees human workers to focus on more creative and strategic activities that require emotional intelligence and complex decision-making skills. For instance, while AI can process thousands of customer complaints to identify patterns, human managers are still needed to develop innovative solutions and implement organizational changes.
+                    </p>
+                    <p>
+                        However, the integration of AI also raises concerns about job displacement. Studies suggest that up to 30% of jobs could be automated by 2030, particularly in manufacturing, transportation, and customer service sectors. This potential displacement necessitates significant investment in retraining and upskilling programs to help workers transition to new roles that complement AI technologies rather than compete with them.
+                    </p>
+                    <p>
+                        Moreover, AI is creating entirely new job categories. Data scientists, AI ethicists, machine learning engineers, and algorithm auditors are just a few examples of emerging professions. These roles require a combination of technical expertise and domain knowledge, highlighting the importance of continuous learning in the AI era. Organizations that invest in developing their workforce's AI literacy are likely to have a competitive advantage.
+                    </p>
+                    <p>
+                        The ethical implications of AI in the workplace cannot be ignored. Issues such as algorithmic bias, privacy concerns, and the transparency of AI decision-making processes require careful consideration. Companies must establish clear guidelines and governance frameworks to ensure that AI systems are used responsibly and do not perpetuate existing inequalities or create new forms of discrimination.
+                    </p>
+                </div>
+
+                <div id="readingQuestions"></div>
+            </div>
+
+            <!-- Writing Section -->
+            <div class="section" id="writingSection">
+                <div class="section-header">
+                    <h2>Part 3: Writing (20 minutes)</h2>
+                    <p>Write at least 150 words in response to the task below</p>
+                </div>
+
+                <div class="question">
+                    <div class="question-text">
+                        <strong>Writing Task:</strong><br><br>
+                        You recently attended a conference on technology and innovation. Write a letter to a friend describing your experience.<br><br>
+                        In your letter:
+                        <ul style="margin-left: 20px; margin-top: 10px;">
+                            <li>Explain what the conference was about</li>
+                            <li>Describe the most interesting session you attended</li>
+                            <li>Suggest why your friend might be interested in attending next year</li>
+                        </ul>
+                    </div>
+                    <textarea id="writingAnswer" placeholder="Write your letter here..." oninput="updateWordCount()"></textarea>
+                    <div class="word-count">Word count: <span id="wordCount">0</span> / 150 minimum</div>
+                </div>
+
+                <button class="btn" onclick="submitWriting()">Submit Writing</button>
+            </div>
+
+            <!-- Speaking Section -->
+            <div class="section" id="speakingSection">
+                <div class="section-header">
+                    <h2>Part 4: Speaking (10 minutes)</h2>
+                    <p>Record your responses to the questions below</p>
+                </div>
+
+                <div class="instructions">
+                    <strong>Speaking Part 1: Introduction and Interview</strong><br>
+                    In a real test, you would speak with an examiner. For this practice, think about your answers and type them below.
+                </div>
+
+                <div id="speakingQuestions"></div>
+
+                <button class="btn" onclick="submitSpeaking()">Submit Speaking</button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="section" id="resultsSection">
+                <div class="results">
+                    <h2>Test Complete!</h2>
+                    <div class="score" id="finalScore"></div>
+                    <div class="band-score" id="bandScore"></div>
+                    
+                    <div style="background: #f8f9fa; padding: 30px; border-radius: 10px; margin: 30px 0; text-align: left;">
+                        <h3 style="color: #667eea; margin-bottom: 20px;">Section Breakdown</h3>
+                        <div id="sectionBreakdown"></div>
+                    </div>
+
+                    <button class="btn" onclick="location.reload()">Retake Test</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Test Data
+        const listeningQuestions = [
+            { q: "The customer wants to travel in which month?", options: ["July", "August", "September", "October"], answer: 1 },
+            { q: "How many children are traveling?", options: ["1", "2", "3", "4"], answer: 1 },
+            { q: "What is the age of the younger child?", options: ["6", "7", "8", "9"], answer: 2 },
+            { q: "What is included in the package price?", options: ["Hotel only", "Flights only", "Hotel and flights", "Hotel, flights and meals"], answer: 2 },
+            { q: "The hotel has a ___", answer: "pool" },
+            { q: "The total cost is £___", answer: "2400" },
+            { q: "The flights depart from London ___", answer: "Heathrow" },
+            { q: "What meal is included?", options: ["Breakfast", "Lunch", "Dinner", "All meals"], answer: 0 },
+            { q: "The destination is in which country?", answer: "Greece" },
+            { q: "The hotel is located at the ___", answer: "beachfront" },
+            { q: "True or False: The package is for three people", options: ["True", "False"], answer: 1 },
+            { q: "The specific destination in Greece is ___", answer: "Crete" },
+            { q: "The travel agency name is ___", answer: "Sun Travel" },
+            { q: "When does the customer want to travel?", options: ["First week of August", "Second week of August", "Third week of August", "Last week of August"], answer: 1 },
+            { q: "The older child is ___ years old", answer: "12" },
+            { q: "What type of accommodation is offered?", options: ["Apartment", "Hotel", "Villa", "Hostel"], answer: 1 },
+            { q: "The hotel has which amenity?", options: ["Gym", "Spa", "Pool", "Restaurant"], answer: 2 },
+            { q: "How many adults are traveling?", answer: "2" },
+            { q: "The flights are ___ (one-way or return)", answer: "return" },
+            { q: "The conversation is between a customer and a ___", answer: "travel agent" }
+        ];
+
+        const readingQuestions = [
+            { q: "According to the passage, AI is transforming workplaces in ___ ways", options: ["limited", "minor", "unprecedented", "traditional"], answer: 2 },
+            { q: "What can machine learning algorithms now handle?", options: ["Only data entry", "Only customer service", "Creative tasks", "Routine tasks"], answer: 3 },
+            { q: "By 2030, what percentage of jobs could be automated?", options: ["10%", "20%", "30%", "40%"], answer: 2 },
+            { q: "AI frees human workers to focus on ___ activities", options: ["repetitive", "routine", "creative", "simple"], answer: 2 },
+            { q: "Which sector is mentioned as potentially affected by automation?", options: ["Education", "Manufacturing", "Healthcare", "Agriculture"], answer: 1 },
+            { q: "True or False: AI can replace human managers completely", options: ["True", "False"], answer: 1 },
+            { q: "Data scientists are an example of a ___ profession", options: ["traditional", "declining", "emerging", "obsolete"], answer: 2 },
+            { q: "Organizations need to invest in ___ programs", options: ["marketing", "retraining", "expansion", "downsizing"], answer: 1 },
+            { q: "What does AI require from workers?", options: ["Less skill", "Same skills", "No skills", "New skills"], answer: 3 },
+            { q: "AI creates jobs that require ___ expertise", options: ["basic", "manual", "technical", "simple"], answer: 2 },
+            { q: "Algorithmic bias is an ___ concern", options: ["economic", "technical", "ethical", "practical"], answer: 2 },
+            { q: "Companies must establish ___ frameworks", options: ["sales", "governance", "marketing", "production"], answer: 1 },
+            { q: "AI can process ___ of customer complaints", options: ["dozens", "hundreds", "thousands", "millions"], answer: 2 },
+            { q: "What type of intelligence do humans provide that AI cannot?", options: ["Artificial", "Emotional", "Limited", "Basic"], answer: 1 },
+            { q: "True or False: AI eliminates the need for human decision-making", options: ["True", "False"], answer: 1 },
+            { q: "The passage suggests organizations should develop workforce ___", options: ["size", "literacy", "turnover", "expenses"], answer: 1 },
+            { q: "Privacy concerns relate to AI ___", options: ["benefits", "speed", "decision-making", "cost"], answer: 2 },
+            { q: "AI integration requires ___ consideration", options: ["quick", "minimal", "careful", "no"], answer: 2 },
+            { q: "Which profession is NOT mentioned?", options: ["Data scientist", "AI ethicist", "Algorithm auditor", "Social media manager"], answer: 3 },
+            { q: "The passage emphasizes the importance of ___ learning", options: ["traditional", "continuous", "limited", "occasional"], answer: 1 }
+        ];
+
+        const speakingQuestions = [
+            "What is your name and where are you from?",
+            "What do you do for work or study?",
+            "Do you enjoy your current occupation? Why or why not?",
+            "What do you like to do in your free time?",
+            "Describe a memorable event from your childhood."
+        ];
+
+        let currentSection = 0;
+        let answers = { listening: {}, reading: {}, writing: '', speaking: {} };
+        let sectionTimer, totalTimer;
+        let sectionTimeLeft = 0;
+        let totalTimeLeft = 75 * 60;
+        let testStartTime;
+        let audioUtterance = null;
+        let audioPlayed = false;
+        let audioInterval = null;
+
+        // Audio script for listening section
+        const listeningScript = `
+            Good morning, Sun Travel Agency. How may I help you?
+            Hi, I'd like to book a holiday to Greece for my family.
+            Certainly. When would you like to travel?
+            We're looking at the second week of August.
+            That's a popular time. How many people will be traveling?
+            Four people. Two adults and two children, aged 8 and 12.
+            Great. We have an excellent package to Crete. It includes a beachfront hotel with a pool and breakfast. The total cost is two thousand four hundred pounds.
+            That sounds good. Does it include flights?
+            Yes, return flights from London Heathrow are included.
+        `;
+
+        function playListeningAudio() {
+            if ('speechSynthesis' in window) {
+                // Cancel any ongoing speech
+                window.speechSynthesis.cancel();
+                
+                audioUtterance = new SpeechSynthesisUtterance(listeningScript);
+                audioUtterance.rate = 0.9; // Slightly slower for clarity
+                audioUtterance.pitch = 1;
+                audioUtterance.volume = 1;
+                
+                // Try to use a British English voice
+                const voices = window.speechSynthesis.getVoices();
+                const britishVoice = voices.find(voice => voice.lang === 'en-GB') || voices.find(voice => voice.lang.startsWith('en'));
+                if (britishVoice) {
+                    audioUtterance.voice = britishVoice;
+                }
+                
+                document.getElementById('audioStatus').textContent = '🎧 Audio playing...';
+                document.getElementById('playAudioBtn').style.display = 'none';
+                document.getElementById('pauseAudioBtn').style.display = 'inline-block';
+                document.getElementById('audioProgress').style.display = 'block';
+                
+                // Show transcript after a short delay
+                setTimeout(() => {
+                    document.getElementById('listeningTranscript').style.display = 'block';
+                }, 2000);
+                
+                // Animate progress bar
+                let progress = 0;
+                const duration = listeningScript.length / 15; // Rough estimate
+                audioInterval = setInterval(() => {
+                    progress += (100 / duration);
+                    if (progress <= 100) {
+                        document.getElementById('audioProgressBar').style.width = progress + '%';
+                    } else {
+                        clearInterval(audioInterval);
+                    }
+                }, 1000);
+                
+                audioUtterance.onend = function() {
+                    document.getElementById('audioStatus').textContent = '✅ Audio completed';
+                    document.getElementById('pauseAudioBtn').style.display = 'none';
+                    document.getElementById('replayAudioBtn').style.display = 'inline-block';
+                    document.getElementById('audioProgressBar').style.width = '100%';
+                    clearInterval(audioInterval);
+                    audioPlayed = true;
+                };
+                
+                audioUtterance.onerror = function(event) {
+                    document.getElementById('audioStatus').textContent = '⚠️ Audio error - transcript shown below';
+                    document.getElementById('listeningTranscript').style.display = 'block';
+                    clearInterval(audioInterval);
+                };
+                
+                window.speechSynthesis.speak(audioUtterance);
+            } else {
+                document.getElementById('audioStatus').textContent = '⚠️ Audio not supported - transcript shown below';
+                document.getElementById('listeningTranscript').style.display = 'block';
+                document.getElementById('playAudioBtn').style.display = 'none';
+            }
+        }
+
+        function pauseAudio() {
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.pause();
+                document.getElementById('audioStatus').textContent = '⏸️ Audio paused';
+                document.getElementById('pauseAudioBtn').textContent = '▶️ Resume';
+                document.getElementById('pauseAudioBtn').onclick = resumeAudio;
+                clearInterval(audioInterval);
+            }
+        }
+
+        function resumeAudio() {
+            if (window.speechSynthesis.paused) {
+                window.speechSynthesis.resume();
+                document.getElementById('audioStatus').textContent = '🎧 Audio playing...';
+                document.getElementById('pauseAudioBtn').textContent = '⏸️ Pause';
+                document.getElementById('pauseAudioBtn').onclick = pauseAudio;
+                
+                // Resume progress animation
+                let currentProgress = parseFloat(document.getElementById('audioProgressBar').style.width);
+                const duration = listeningScript.length / 15;
+                audioInterval = setInterval(() => {
+                    currentProgress += (100 / duration);
+                    if (currentProgress <= 100) {
+                        document.getElementById('audioProgressBar').style.width = currentProgress + '%';
+                    } else {
+                        clearInterval(audioInterval);
+                    }
+                }, 1000);
+            }
+        }
+
+        function replayAudio() {
+            document.getElementById('audioProgressBar').style.width = '0%';
+            document.getElementById('replayAudioBtn').style.display = 'none';
+            playListeningAudio();
+        }
+
+        // Initialize questions
+        function initializeQuestions() {
+            // Listening questions
+            let html = '';
+            listeningQuestions.forEach((q, i) => {
+                html += `<div class="question">
+                    <div class="question-number">Question ${i + 1}</div>
+                    <div class="question-text">${q.q}</div>`;
+                
+                if (q.options) {
+                    html += '<div class="options">';
+                    q.options.forEach((opt, j) => {
+                        html += `
+                            <label class="option">
+                                <input type="radio" name="listening_${i}" value="${j}" onchange="saveAnswer('listening', ${i}, ${j})">
+                                <span>${opt}</span>
+                            </label>`;
+                    });
+                    html += '</div>';
+                } else {
+                    html += `<input type="text" placeholder="Type your answer" onchange="saveAnswer('listening', ${i}, this.value)">`;
+                }
+                html += '</div>';
+            });
+            html += '<button class="btn" onclick="nextSection()">Continue to Reading</button>';
+            document.getElementById('listeningQuestions').innerHTML = html;
+
+            // Reading questions
+            html = '';
+            readingQuestions.forEach((q, i) => {
+                html += `<div class="question">
+                    <div class="question-number">Question ${i + 1}</div>
+                    <div class="question-text">${q.q}</div>`;
+                
+                if (q.options) {
+                    html += '<div class="options">';
+                    q.options.forEach((opt, j) => {
+                        html += `
+                            <label class="option">
+                                <input type="radio" name="reading_${i}" value="${j}" onchange="saveAnswer('reading', ${i}, ${j})">
+                                <span>${opt}</span>
+                            </label>`;
+                    });
+                    html += '</div>';
+                } else {
+                    html += `<input type="text" placeholder="Type your answer" onchange="saveAnswer('reading', ${i}, this.value)">`;
+                }
+                html += '</div>';
+            });
+            html += '<button class="btn" onclick="nextSection()">Continue to Writing</button>';
+            document.getElementById('readingQuestions').innerHTML = html;
+
+            // Speaking questions
+            html = '';
+            speakingQuestions.forEach((q, i) => {
+                html += `<div class="question">
+                    <div class="question-number">Question ${i + 1}</div>
+                    <div class="question-text">${q}</div>
+                    <textarea placeholder="Type your response here..." onchange="saveAnswer('speaking', ${i}, this.value)" style="min-height: 100px;"></textarea>
+                </div>`;
+            });
+            document.getElementById('speakingQuestions').innerHTML = html;
+        }
+
+        function startTest() {
+            // Load voices for speech synthesis
+            if ('speechSynthesis' in window) {
+                window.speechSynthesis.getVoices();
+            }
+            
+            document.getElementById('startScreen').classList.remove('active');
+            document.getElementById('listeningSection').classList.add('active');
+            testStartTime = Date.now();
+            startSectionTimer(15 * 60);
+            startTotalTimer();
+        }
+
+        function startSectionTimer(seconds) {
+            sectionTimeLeft = seconds;
+            updateSectionTimer();
+            sectionTimer = setInterval(() => {
+                sectionTimeLeft--;
+                updateSectionTimer();
+                if (sectionTimeLeft <= 0) {
+                    clearInterval(sectionTimer);
+                    nextSection();
+                }
+            }, 1000);
+        }
+
+        function startTotalTimer() {
+            updateTotalTimer();
+            totalTimer = setInterval(() => {
+                totalTimeLeft--;
+                updateTotalTimer();
+                if (totalTimeLeft <= 0) {
+                    clearInterval(totalTimer);
+                    finishTest();
+                }
+            }, 1000);
+        }
+
+        function updateSectionTimer() {
+            const mins = Math.floor(sectionTimeLeft / 60);
+            const secs = sectionTimeLeft % 60;
+            const timerEl = document.getElementById('sectionTimer');
+            timerEl.textContent = `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+            if (sectionTimeLeft <= 60) {
+                timerEl.classList.add('warning');
+            }
+        }
+
+        function updateTotalTimer() {
+            const mins = Math.floor(totalTimeLeft / 60);
+            const secs = totalTimeLeft % 60;
+            document.getElementById('totalTimer').textContent = 
+                `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+        }
+
+        function saveAnswer(section, questionIndex, value) {
+            answers[section][questionIndex] = value;
+        }
+
+        function updateWordCount() {
+            const text = document.getElementById('writingAnswer').value;
+            const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
+            document.getElementById('wordCount').textContent = words;
+        }
+
+        function nextSection() {
+            clearInterval(sectionTimer);
+            
+            // Stop any playing audio
+            if (window.speechSynthesis.speaking) {
+                window.speechSynthesis.cancel();
+            }
+            if (audioInterval) {
+                clearInterval(audioInterval);
+            }
+            
+            const sections = ['listeningSection', 'readingSection', 'writingSection', 'speakingSection'];
+            const times = [15 * 60, 30 * 60, 20 * 60, 10 * 60];
+            
+            document.getElementById(sections[currentSection]).classList.remove('active');
+            currentSection++;
+            
+            if (currentSection < sections.length) {
+                document.getElementById(sections[currentSection]).classList.add('active');
+                startSectionTimer(times[currentSection]);
+            } else {
+                finishTest();
+            }
+        }
+
+        function submitWriting() {
+            answers.writing = document.getElementById('writingAnswer').value;
+            nextSection();
+        }
+
+        function submitSpeaking() {
+            finishTest();
+        }
+
+        function finishTest() {
+            clearInterval(sectionTimer);
+            clearInterval(totalTimer);
+            
+            // Calculate scores
+            let listeningScore = 0;
+            listeningQuestions.forEach((q, i) => {
+                const userAnswer = answers.listening[i];
+                if (typeof q.answer === 'number') {
+                    if (userAnswer === q.answer) listeningScore++;
+                } else {
+                    if (userAnswer && userAnswer.toLowerCase().trim() === q.answer.toLowerCase()) listeningScore++;
+                }
+            });
+
+            let readingScore = 0;
+            readingQuestions.forEach((q, i) => {
+                const userAnswer = answers.reading[i];
+                if (userAnswer === q.answer) readingScore++;
+            });
+
+            const totalScore = listeningScore + readingScore;
+            const percentage = (totalScore / 40) * 100;
+            const bandScore = calculateBandScore(percentage);
+
+            // Display results
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.getElementById('resultsSection').classList.add('active');
+            document.getElementById('finalScore').textContent = `${totalScore} / 40 correct`;
+            document.getElementById('bandScore').textContent = `Estimated Band Score: ${bandScore}`;
+            
+            const breakdown = `
+                <div style="margin-bottom: 15px;"><strong>Listening:</strong> ${listeningScore}/20 (${((listeningScore/20)*100).toFixed(0)}%)</div>
+                <div style="margin-bottom: 15px;"><strong>Reading:</strong> ${readingScore}/20 (${((readingScore/20)*100).toFixed(0)}%)</div>
+                <div style="margin-bottom: 15px;"><strong>Writing:</strong> ${answers.writing.split(/\s+/).length} words written</div>
+                <div style="margin-bottom: 15px;"><strong>Speaking:</strong> ${Object.keys(answers.speaking).length}/5 questions answered</div>
+                <div style="margin-top: 20px; padding-top: 20px; border-top: 2px solid #e0e0e0;"><strong>Overall Score:</strong> ${percentage.toFixed(1)}%</div>
+            `;
+            document.getElementById('sectionBreakdown').innerHTML = breakdown;
+        }
+
+        function calculateBandScore(percentage) {
+            if (percentage >= 90) return "8.5-9.0";
+            if (percentage >= 80) return "7.5-8.0";
+            if (percentage >= 70) return "6.5-7.0";
+            if (percentage >= 60) return "6.0-6.5";
+            if (percentage >= 50) return "5.5-6.0";
+            if (percentage >= 40) return "5.0-5.5";
+            return "4.0-5.0";
+        }
+
+        // Initialize on load
+        initializeQuestions();
+    </script>
+</body>
+</html>
