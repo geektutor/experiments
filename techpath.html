@@ -1,0 +1,994 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TechPath — Discover Your Tech Skill</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0f;
+    --surface: #13131a;
+    --surface2: #1c1c28;
+    --border: rgba(255,255,255,0.08);
+    --accent: #7c6aff;
+    --accent2: #ff6a9b;
+    --accent3: #6affd4;
+    --text: #f0f0f8;
+    --muted: #8888aa;
+    --radius: 16px;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    position: relative;
+    overflow-x: hidden;
+  }
+
+  /* Ambient background blobs */
+  body::before, body::after {
+    content: '';
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::before {
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(124,106,255,0.15), transparent 70%);
+    top: -200px; left: -200px;
+  }
+  body::after {
+    width: 500px; height: 500px;
+    background: radial-gradient(circle, rgba(255,106,155,0.1), transparent 70%);
+    bottom: -150px; right: -150px;
+  }
+
+  .app {
+    width: 100%;
+    max-width: 640px;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Screens */
+  .screen { display: none; animation: fadeUp 0.4s ease both; }
+  .screen.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Card */
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 48px 40px;
+    backdrop-filter: blur(12px);
+  }
+
+  /* Brand */
+  .brand {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 40px;
+  }
+
+  /* Landing */
+  .hero-eyebrow {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent3);
+    margin-bottom: 16px;
+  }
+  .hero-title {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(32px, 5vw, 48px);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .hero-title span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-desc {
+    font-size: 17px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 36px;
+    font-weight: 300;
+  }
+  .meta-row {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 40px;
+    flex-wrap: wrap;
+  }
+  .meta-pill {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .meta-pill .dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--accent3);
+  }
+
+  /* Buttons */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 16px 32px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 16px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--accent), #9b6aff);
+    color: #fff;
+    width: 100%;
+  }
+  .btn-primary:hover { opacity: 0.9; transform: translateY(-1px); box-shadow: 0 8px 32px rgba(124,106,255,0.3); }
+  .btn-secondary {
+    background: transparent;
+    color: var(--muted);
+    border: 1px solid var(--border);
+    width: 100%;
+    font-size: 14px;
+    padding: 12px 24px;
+  }
+  .btn-secondary:hover { color: var(--text); border-color: rgba(255,255,255,0.2); }
+
+  /* Progress */
+  .progress-wrap { margin-bottom: 32px; }
+  .progress-label {
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+  .progress-track {
+    height: 3px;
+    background: var(--surface2);
+    border-radius: 99px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    border-radius: 99px;
+    transition: width 0.4s ease;
+  }
+
+  /* Question */
+  .q-number {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 14px;
+  }
+  .q-text {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(18px, 3vw, 24px);
+    font-weight: 700;
+    line-height: 1.3;
+    margin-bottom: 28px;
+  }
+
+  /* Options */
+  .options { display: flex; flex-direction: column; gap: 10px; }
+  .option {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 16px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: left;
+  }
+  .option:hover {
+    border-color: rgba(124,106,255,0.4);
+    background: rgba(124,106,255,0.06);
+  }
+  .option.selected {
+    border-color: var(--accent);
+    background: rgba(124,106,255,0.12);
+  }
+  .option-key {
+    width: 28px; height: 28px;
+    min-width: 28px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    transition: all 0.2s;
+  }
+  .option.selected .option-key {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: #fff;
+  }
+  .option-text { font-size: 15px; line-height: 1.5; padding-top: 2px; }
+
+  .q-nav {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 28px;
+  }
+  .btn-next {
+    background: linear-gradient(135deg, var(--accent), #9b6aff);
+    color: #fff;
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    opacity: 0.4;
+    pointer-events: none;
+  }
+  .btn-next.enabled {
+    opacity: 1;
+    pointer-events: all;
+  }
+  .btn-next.enabled:hover { transform: translateY(-1px); box-shadow: 0 8px 24px rgba(124,106,255,0.3); }
+
+  /* Email Gate */
+  .gate-emoji { font-size: 48px; margin-bottom: 20px; }
+  .gate-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 28px;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+  .gate-desc { font-size: 16px; color: var(--muted); line-height: 1.6; margin-bottom: 32px; font-weight: 300; }
+
+  .form-group { margin-bottom: 14px; }
+  .form-group label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+  .form-group input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .form-group input:focus { border-color: var(--accent); }
+  .form-group input::placeholder { color: var(--muted); }
+
+  .gate-actions { display: flex; flex-direction: column; gap: 10px; margin-top: 24px; }
+  .skip-text {
+    text-align: center;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .skip-link {
+    color: var(--muted);
+    text-decoration: underline;
+    text-underline-offset: 3px;
+    cursor: pointer;
+    transition: color 0.2s;
+  }
+  .skip-link:hover { color: var(--text); }
+
+  /* Loading */
+  #screen-loading { text-align: center; padding: 80px 40px; }
+  .loader-ring {
+    width: 64px; height: 64px;
+    border: 3px solid var(--surface2);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 24px;
+  }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  .loader-text {
+    font-family: 'Syne', sans-serif;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 8px;
+  }
+  .loader-sub { font-size: 14px; color: var(--muted); }
+
+  /* Results */
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 99px;
+    background: rgba(124,106,255,0.15);
+    border: 1px solid rgba(124,106,255,0.3);
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 24px;
+  }
+  .result-path {
+    font-family: 'Syne', sans-serif;
+    font-size: clamp(28px, 5vw, 40px);
+    font-weight: 800;
+    margin-bottom: 16px;
+    line-height: 1.1;
+  }
+  .result-path span {
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .result-why {
+    font-size: 16px;
+    color: var(--muted);
+    line-height: 1.7;
+    margin-bottom: 32px;
+    font-weight: 300;
+  }
+
+  .result-section-title {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+  }
+
+  .secondary-path {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 16px 20px;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .secondary-path-icon { font-size: 24px; }
+  .secondary-path-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+  }
+  .secondary-path-desc { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+  .resources { display: flex; flex-direction: column; gap: 10px; margin-bottom: 32px; }
+  .resource-item {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 18px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    text-decoration: none;
+    color: var(--text);
+    transition: all 0.2s;
+  }
+  .resource-item:hover { border-color: rgba(124,106,255,0.4); transform: translateX(4px); }
+  .resource-icon { font-size: 20px; }
+  .resource-name { font-size: 14px; font-weight: 500; }
+  .resource-type { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .resource-arrow { margin-left: auto; color: var(--muted); font-size: 16px; }
+
+  /* Soft email capture (for skippers) */
+  .soft-capture {
+    background: linear-gradient(135deg, rgba(124,106,255,0.1), rgba(255,106,155,0.05));
+    border: 1px solid rgba(124,106,255,0.2);
+    border-radius: var(--radius);
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .soft-capture-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    margin-bottom: 6px;
+  }
+  .soft-capture-desc { font-size: 13px; color: var(--muted); margin-bottom: 16px; line-height: 1.5; }
+  .soft-row {
+    display: flex;
+    gap: 10px;
+  }
+  .soft-row input {
+    flex: 1;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 16px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .soft-row input:focus { border-color: var(--accent); }
+  .soft-row input::placeholder { color: var(--muted); }
+  .soft-row button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+  }
+  .soft-row button:hover { opacity: 0.85; }
+  .soft-sent { font-size: 13px; color: var(--accent3); display: none; margin-top: 10px; }
+
+  .result-actions { display: flex; gap: 10px; }
+  .btn-share {
+    flex: 1;
+    background: transparent;
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-share:hover { border-color: rgba(255,255,255,0.3); }
+  .btn-retake {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    color: var(--text);
+    padding: 14px;
+    border-radius: 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .btn-retake:hover { border-color: rgba(255,255,255,0.2); }
+
+  /* Confirmation tag (for those who submitted email) */
+  .email-confirm {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 14px 18px;
+    background: rgba(106, 255, 212, 0.08);
+    border: 1px solid rgba(106, 255, 212, 0.2);
+    border-radius: var(--radius);
+    margin-bottom: 28px;
+    font-size: 14px;
+    color: var(--accent3);
+  }
+
+  @media (max-width: 520px) {
+    .card { padding: 32px 24px; }
+    .result-actions { flex-direction: column; }
+    .soft-row { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- LANDING -->
+  <div class="screen active" id="screen-landing">
+    <div class="card">
+      <div class="brand">TechPath ✦</div>
+      <div class="hero-eyebrow">Career Discovery Quiz</div>
+      <h1 class="hero-title">What tech skill should <span>you learn?</span></h1>
+      <p class="hero-desc">Stop Googling. Answer 7 questions and get a personalised tech learning path in under 60 seconds.</p>
+      <div class="meta-row">
+        <div class="meta-pill"><span class="dot"></span> 7 questions</div>
+        <div class="meta-pill"><span class="dot"></span> ~2 minutes</div>
+        <div class="meta-pill"><span class="dot"></span> Free & instant</div>
+      </div>
+      <button class="btn btn-primary" onclick="startQuiz()">Start the Quiz →</button>
+    </div>
+  </div>
+
+  <!-- QUIZ -->
+  <div class="screen" id="screen-quiz">
+    <div class="card">
+      <div class="brand">TechPath ✦</div>
+      <div class="progress-wrap">
+        <div class="progress-label">
+          <span id="q-label">Question 1 of 7</span>
+          <span id="q-percent">14%</span>
+        </div>
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width:14%"></div>
+        </div>
+      </div>
+      <div class="q-number" id="q-number">01 / 07</div>
+      <div class="q-text" id="q-text"></div>
+      <div class="options" id="options-container"></div>
+      <div class="q-nav">
+        <button class="btn-next" id="btn-next" onclick="nextQuestion()">Continue →</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- EMAIL GATE -->
+  <div class="screen" id="screen-gate">
+    <div class="card">
+      <div class="brand">TechPath ✦</div>
+      <div class="gate-emoji">🎯</div>
+      <div class="gate-title">You're almost there!</div>
+      <p class="gate-desc">Enter your email and we'll send your personalised tech path + a free learning roadmap straight to your inbox.</p>
+      <div class="form-group">
+        <label>First Name</label>
+        <input type="text" id="gate-name" placeholder="e.g. Tunde" />
+      </div>
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" id="gate-email" placeholder="you@example.com" />
+      </div>
+      <div class="gate-actions">
+        <button class="btn btn-primary" onclick="submitEmail()">Get My Results →</button>
+        <p class="skip-text">No thanks, <span class="skip-link" onclick="skipEmail()">just show me my result</span></p>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOADING -->
+  <div class="screen" id="screen-loading">
+    <div class="card">
+      <div class="loader-ring"></div>
+      <div class="loader-text">Analysing your answers...</div>
+      <div class="loader-sub">Finding your perfect tech path 🔍</div>
+    </div>
+  </div>
+
+  <!-- RESULTS -->
+  <div class="screen" id="screen-results">
+    <div class="card">
+      <div class="brand">TechPath ✦</div>
+      <div class="result-badge">✦ Your Tech Path</div>
+      <div class="result-path">You're a natural <span id="result-title">Frontend Developer</span></div>
+      <p class="result-why" id="result-why"></p>
+
+      <!-- Email confirmation (shown if email was submitted) -->
+      <div class="email-confirm" id="email-confirm" style="display:none">
+        📩 Check your inbox — your personalised roadmap is on its way!
+      </div>
+
+      <!-- Soft capture for skippers -->
+      <div class="soft-capture" id="soft-capture" style="display:none">
+        <div class="soft-capture-title">📬 Want your full roadmap emailed?</div>
+        <div class="soft-capture-desc">We'll send a step-by-step guide for your path, curated resources, and community links — free.</div>
+        <div class="soft-row">
+          <input type="email" id="soft-email" placeholder="your@email.com" />
+          <button onclick="softSubmit()">Send it →</button>
+        </div>
+        <div class="soft-sent" id="soft-sent">✓ Great! Check your inbox shortly.</div>
+      </div>
+
+      <div class="result-section-title">Runner-up Path</div>
+      <div class="secondary-path">
+        <div class="secondary-path-icon" id="secondary-icon">🎨</div>
+        <div>
+          <div class="secondary-path-name" id="secondary-name"></div>
+          <div class="secondary-path-desc" id="secondary-desc"></div>
+        </div>
+      </div>
+
+      <div class="result-section-title">Where to Start</div>
+      <div class="resources" id="resources-container"></div>
+
+      <div class="result-actions">
+        <button class="btn-share" onclick="shareResult()">🔗 Share Result</button>
+        <button class="btn-retake" onclick="retakeQuiz()">↺ Retake Quiz</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ─── QUESTIONS ───────────────────────────────────────────────────────────────
+const questions = [
+  {
+    text: "What sounds most exciting to you?",
+    options: [
+      { text: "Building something people can see and interact with", scores: { frontend: 3, uiux: 2 } },
+      { text: "Solving complex logic puzzles behind the scenes", scores: { backend: 3, devops: 1, ai: 1 } },
+      { text: "Finding patterns in data to make better decisions", scores: { data: 3, ai: 2 } },
+      { text: "Making sure systems are safe and nothing goes wrong", scores: { security: 3, devops: 1 } },
+    ]
+  },
+  {
+    text: "How do you work best?",
+    options: [
+      { text: "I love sketching, designing, and making things look good", scores: { uiux: 3, frontend: 2 } },
+      { text: "I prefer writing instructions and automating repetitive tasks", scores: { backend: 2, devops: 3 } },
+      { text: "I like researching, analysing, and presenting insights", scores: { data: 3, pm: 1 } },
+      { text: "I enjoy leading teams and connecting dots across projects", scores: { pm: 3, web3: 1 } },
+    ]
+  },
+  {
+    text: "Which of these apps do you admire most?",
+    options: [
+      { text: "Figma — the design is clean and intuitive", scores: { uiux: 3, frontend: 1 } },
+      { text: "Excel / Sheets — the formulas and logic fascinate me", scores: { data: 3, backend: 1 } },
+      { text: "GitHub — I love the idea of building and shipping things", scores: { backend: 3, devops: 2 } },
+      { text: "Notion / Trello — I live for organisation and workflows", scores: { pm: 3, uiux: 1 } },
+    ]
+  },
+  {
+    text: "How comfortable are you with maths and logic?",
+    options: [
+      { text: "Very comfortable — I love numbers and formulas", scores: { ai: 3, data: 2, security: 1 } },
+      { text: "Somewhat comfortable — basic maths is fine", scores: { backend: 2, frontend: 1, devops: 1 } },
+      { text: "Not really — I prefer words, visuals, and people", scores: { uiux: 3, pm: 2 } },
+      { text: "I'm more into big-picture strategy than details", scores: { pm: 3, web3: 2 } },
+    ]
+  },
+  {
+    text: "What's your end goal?",
+    options: [
+      { text: "Get a remote job at a tech company", scores: { frontend: 2, backend: 2, data: 1 } },
+      { text: "Build my own product or startup", scores: { pm: 2, web3: 2, frontend: 1 } },
+      { text: "Freelance and work on my own terms", scores: { frontend: 3, uiux: 2 } },
+      { text: "Lead tech teams or manage digital products", scores: { pm: 3, devops: 1 } },
+    ]
+  },
+  {
+    text: "How much time can you commit per week?",
+    options: [
+      { text: "Less than 5 hours — I'm starting slowly", scores: { uiux: 1, pm: 1 } },
+      { text: "5–10 hours — steady progress", scores: { frontend: 1, data: 1 } },
+      { text: "10–20 hours — I'm serious about this", scores: { backend: 1, security: 1, ai: 1 } },
+      { text: "20+ hours — I'm going all in", scores: { ai: 2, web3: 2, devops: 1 } },
+    ]
+  },
+  {
+    text: "Which statement describes you best?",
+    options: [
+      { text: "I notice when websites look off or feel clunky", scores: { uiux: 3, frontend: 2 } },
+      { text: "I always want to know HOW things work under the hood", scores: { backend: 3, devops: 2, security: 1 } },
+      { text: "I'm obsessed with security, privacy, and risk", scores: { security: 3, web3: 1 } },
+      { text: "I'm fascinated by decentralisation and the future of money", scores: { web3: 3, ai: 1 } },
+    ]
+  },
+];
+
+// ─── PATHS ───────────────────────────────────────────────────────────────────
+const paths = {
+  frontend: {
+    title: "Frontend Developer",
+    icon: "💻",
+    why: "You're drawn to what people see and experience. You care about design, interactivity, and making technology feel effortless. Frontend development is your sweet spot — where creativity meets code.",
+    secondary: { name: "UI/UX Design", desc: "A natural companion — design systems and user flows.", icon: "🎨" },
+    resources: [
+      { name: "The Odin Project", type: "Free full curriculum", url: "https://theodinproject.com", icon: "📚" },
+      { name: "CSS Tricks", type: "Reference & tutorials", url: "https://css-tricks.com", icon: "🎯" },
+      { name: "Frontend Mentor", type: "Project-based practice", url: "https://frontendmentor.io", icon: "🏗️" },
+    ]
+  },
+  backend: {
+    title: "Backend Developer",
+    icon: "⚙️",
+    why: "You're a systems thinker. You care more about how things work than how they look. Backend development lets you build the engine that powers everything — APIs, databases, and server logic.",
+    secondary: { name: "DevOps / Cloud", desc: "The next step — deploying and scaling what you build.", icon: "☁️" },
+    resources: [
+      { name: "CS50 by Harvard", type: "Free foundational course", url: "https://cs50.harvard.edu", icon: "🎓" },
+      { name: "roadmap.sh/backend", type: "Structured learning path", url: "https://roadmap.sh/backend", icon: "🗺️" },
+      { name: "FreeCodeCamp", type: "Free project-based learning", url: "https://freecodecamp.org", icon: "📚" },
+    ]
+  },
+  data: {
+    title: "Data Analyst / Scientist",
+    icon: "📊",
+    why: "You love making sense of chaos. You're the person who opens a spreadsheet and sees stories, not just numbers. Data is the most in-demand skill in business today — and it suits you perfectly.",
+    secondary: { name: "AI / Machine Learning", desc: "The natural evolution of data skills.", icon: "🤖" },
+    resources: [
+      { name: "Google Data Analytics (Coursera)", type: "Professional certificate", url: "https://coursera.org/professional-certificates/google-data-analytics", icon: "🎓" },
+      { name: "Kaggle Learn", type: "Free interactive notebooks", url: "https://kaggle.com/learn", icon: "📈" },
+      { name: "DataCamp", type: "Structured data curriculum", url: "https://datacamp.com", icon: "🔬" },
+    ]
+  },
+  uiux: {
+    title: "UI/UX Designer",
+    icon: "🎨",
+    why: "You're deeply empathetic and visually fluent. You notice how things feel, not just how they look. UI/UX design is about understanding people and building products they love — a rare and valuable skill.",
+    secondary: { name: "Frontend Development", desc: "Designers who code are extraordinarily valuable.", icon: "💻" },
+    resources: [
+      { name: "Google UX Design (Coursera)", type: "Beginner-friendly certificate", url: "https://coursera.org/professional-certificates/google-ux-design", icon: "🎓" },
+      { name: "Figma Learn", type: "Free tool mastery", url: "https://help.figma.com/hc/en-us/categories/360002042553", icon: "🖌️" },
+      { name: "Refactoring UI", type: "Design for developers", url: "https://refactoringui.com", icon: "📐" },
+    ]
+  },
+  pm: {
+    title: "Product Manager",
+    icon: "🧭",
+    why: "You're a connector. You see the big picture, communicate clearly, and know how to organise people around a shared goal. Product Management doesn't require you to code — it requires you to think clearly and lead well.",
+    secondary: { name: "UI/UX Design", desc: "PMs who understand design make better decisions.", icon: "🎨" },
+    resources: [
+      { name: "Product School (Free Resources)", type: "PM frameworks & templates", url: "https://productschool.com/resources", icon: "📦" },
+      { name: "Reforge Blog", type: "Advanced PM thinking", url: "https://reforge.com/blog", icon: "🧠" },
+      { name: "Lenny's Newsletter", type: "Weekly PM insights", url: "https://lennysnewsletter.com", icon: "📬" },
+    ]
+  },
+  security: {
+    title: "Cybersecurity Analyst",
+    icon: "🔒",
+    why: "You're detail-oriented, cautious, and investigative by nature. Cybersecurity rewards exactly those traits — it's about finding what others miss and protecting what matters most.",
+    secondary: { name: "DevOps / Cloud", desc: "Cloud security is one of the fastest-growing niches.", icon: "☁️" },
+    resources: [
+      { name: "Google Cybersecurity (Coursera)", type: "Professional certificate", url: "https://coursera.org/professional-certificates/google-cybersecurity", icon: "🎓" },
+      { name: "TryHackMe", type: "Hands-on learning labs", url: "https://tryhackme.com", icon: "🕵️" },
+      { name: "CompTIA Security+ Guide", type: "Industry certification path", url: "https://comptia.org/certifications/security", icon: "📜" },
+    ]
+  },
+  devops: {
+    title: "DevOps / Cloud Engineer",
+    icon: "☁️",
+    why: "You're a systems thinker who loves reliability, automation, and scale. DevOps is for people who want to build the infrastructure that everything else runs on — high demand and high pay.",
+    secondary: { name: "Backend Development", desc: "Understanding backend helps you deploy it better.", icon: "⚙️" },
+    resources: [
+      { name: "AWS Cloud Practitioner (Free)", type: "Cloud fundamentals", url: "https://aws.amazon.com/training/digital/aws-cloud-practitioner-essentials", icon: "☁️" },
+      { name: "roadmap.sh/devops", type: "Structured DevOps path", url: "https://roadmap.sh/devops", icon: "🗺️" },
+      { name: "Linux Foundation Courses", type: "Free beginner Linux training", url: "https://training.linuxfoundation.org/resources/free-courses", icon: "🐧" },
+    ]
+  },
+  ai: {
+    title: "AI / Machine Learning Engineer",
+    icon: "🤖",
+    why: "You're analytical, curious, and not afraid of complexity. AI/ML is the deepest end of tech — but also the most transformative. If you're comfortable with maths and love understanding systems, this is your path.",
+    secondary: { name: "Data Science", desc: "Data mastery is the foundation of every ML project.", icon: "📊" },
+    resources: [
+      { name: "fast.ai", type: "Practical deep learning (free)", url: "https://fast.ai", icon: "🧪" },
+      { name: "DeepLearning.AI (Coursera)", type: "Andrew Ng's ML specialisation", url: "https://deeplearning.ai", icon: "🎓" },
+      { name: "Kaggle Competitions", type: "Learn by competing", url: "https://kaggle.com/competitions", icon: "🏆" },
+    ]
+  },
+  web3: {
+    title: "Web3 / Blockchain Developer",
+    icon: "⛓️",
+    why: "You're a believer in decentralisation and the future of the open internet. Web3 development is still early — which means the opportunity is massive for people willing to go deep now.",
+    secondary: { name: "Backend Development", desc: "Solidity and smart contracts are backend, but different.", icon: "⚙️" },
+    resources: [
+      { name: "Buildspace", type: "Project-based Web3 learning", url: "https://buildspace.so", icon: "🏗️" },
+      { name: "CryptoZombies", type: "Learn Solidity by building", url: "https://cryptozombies.io", icon: "🧟" },
+      { name: "Ethereum.org/learn", type: "Official developer docs", url: "https://ethereum.org/en/learn", icon: "🌐" },
+    ]
+  },
+};
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let currentQ = 0;
+let answers = [];
+let selectedOption = null;
+let emailSubmitted = false;
+let resultKey = null;
+
+// ─── QUIZ LOGIC ───────────────────────────────────────────────────────────────
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const el = document.getElementById(id);
+  el.classList.add('active');
+  // Re-trigger animation
+  el.style.animation = 'none';
+  el.offsetHeight;
+  el.style.animation = '';
+}
+
+function startQuiz() {
+  currentQ = 0;
+  answers = [];
+  showScreen('screen-quiz');
+  renderQuestion();
+}
+
+function renderQuestion() {
+  const q = questions[currentQ];
+  const total = questions.length;
+  const num = currentQ + 1;
+  const pct = Math.round((num / total) * 100);
+
+  document.getElementById('q-label').textContent = `Question ${num} of ${total}`;
+  document.getElementById('q-percent').textContent = `${pct}%`;
+  document.getElementById('progress-fill').style.width = `${pct}%`;
+  document.getElementById('q-number').textContent = `${String(num).padStart(2,'0')} / ${String(total).padStart(2,'0')}`;
+  document.getElementById('q-text').textContent = q.text;
+
+  const keys = ['A','B','C','D'];
+  const container = document.getElementById('options-container');
+  container.innerHTML = '';
+  selectedOption = null;
+  document.getElementById('btn-next').classList.remove('enabled');
+
+  q.options.forEach((opt, i) => {
+    const div = document.createElement('div');
+    div.className = 'option';
+    div.innerHTML = `<div class="option-key">${keys[i]}</div><div class="option-text">${opt.text}</div>`;
+    div.addEventListener('click', () => selectOption(i, div));
+    container.appendChild(div);
+  });
+}
+
+function selectOption(index, el) {
+  document.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedOption = index;
+  document.getElementById('btn-next').classList.add('enabled');
+}
+
+function nextQuestion() {
+  if (selectedOption === null) return;
+  answers.push(selectedOption);
+  currentQ++;
+  if (currentQ < questions.length) {
+    renderQuestion();
+  } else {
+    showScreen('screen-gate');
+  }
+}
+
+// ─── SCORING ──────────────────────────────────────────────────────────────────
+function calcResult() {
+  const scores = {};
+  Object.keys(paths).forEach(k => scores[k] = 0);
+  questions.forEach((q, qi) => {
+    const opt = q.options[answers[qi]];
+    Object.entries(opt.scores).forEach(([k, v]) => { scores[k] = (scores[k] || 0) + v; });
+  });
+  const sorted = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+  return sorted[0][0]; // top path key
+}
+
+// ─── EMAIL GATE ───────────────────────────────────────────────────────────────
+function submitEmail() {
+  const email = document.getElementById('gate-email').value.trim();
+  // Basic validation
+  if (email && email.includes('@')) {
+    emailSubmitted = true;
+    const name = document.getElementById('gate-name').value.trim();
+    // 🔌 Hook: send to your email platform here
+    console.log('Email captured:', { name, email, result: calcResult(), timestamp: new Date().toISOString() });
+  }
+  showLoading();
+}
+
+function skipEmail() {
+  emailSubmitted = false;
+  showLoading();
+}
+
+function showLoading() {
+  showScreen('screen-loading');
+  setTimeout(showResults, 2200);
+}
+
+// ─── RESULTS ──────────────────────────────────────────────────────────────────
+function showResults() {
+  resultKey = calcResult();
+  const path = paths[resultKey];
+
+  document.getElementById('result-title').textContent = path.title;
+  document.getElementById('result-why').textContent = path.why;
+  document.getElementById('secondary-icon').textContent = path.secondary.icon;
+  document.getElementById('secondary-name').textContent = path.secondary.name;
+  document.getElementById('secondary-desc').textContent = path.secondary.desc;
+
+  // Resources
+  const rContainer = document.getElementById('resources-container');
+  rContainer.innerHTML = '';
+  path.resources.forEach(r => {
+    const a = document.createElement('a');
+    a.className = 'resource-item';
+    a.href = r.url;
+    a.target = '_blank';
+    a.rel = 'noopener';
+    a.innerHTML = `<span class="resource-icon">${r.icon}</span><div><div class="resource-name">${r.name}</div><div class="resource-type">${r.type}</div></div><span class="resource-arrow">→</span>`;
+    rContainer.appendChild(a);
+  });
+
+  // Email state
+  if (emailSubmitted) {
+    document.getElementById('email-confirm').style.display = 'flex';
+    document.getElementById('soft-capture').style.display = 'none';
+  } else {
+    document.getElementById('email-confirm').style.display = 'none';
+    document.getElementById('soft-capture').style.display = 'block';
+  }
+
+  showScreen('screen-results');
+}
+
+// ─── SOFT CAPTURE ─────────────────────────────────────────────────────────────
+function softSubmit() {
+  const email = document.getElementById('soft-email').value.trim();
+  if (!email || !email.includes('@')) return;
+  // 🔌 Hook: send to your email platform here
+  console.log('Soft email captured:', { email, result: resultKey, timestamp: new Date().toISOString() });
+  document.getElementById('soft-sent').style.display = 'block';
+  document.querySelector('.soft-row').style.display = 'none';
+}
+
+// ─── SHARE ────────────────────────────────────────────────────────────────────
+function shareResult() {
+  const path = paths[resultKey];
+  const text = `I just found out my tech path is ${path.title} ${path.icon} — take the quiz to find yours!`;
+  if (navigator.share) {
+    navigator.share({ title: 'TechPath Quiz Result', text, url: window.location.href });
+  } else {
+    navigator.clipboard.writeText(text + ' ' + window.location.href);
+    alert('Result copied to clipboard!');
+  }
+}
+
+function retakeQuiz() {
+  startQuiz();
+}
+</script>
+</body>
+</html>
