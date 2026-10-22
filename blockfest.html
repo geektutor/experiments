@@ -1,0 +1,875 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Community Launch Workbook — Blockfest Africa 2026</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<style>
+/* ── Brand palette ── */
+:root {
+  --amber:       #FFAA42;
+  --amber-mid:   #F29A36;
+  --amber-deep:  #E08A20;
+  --red:         #E61E36;
+  --red-dark:    #CF1A31;
+  --navy:        #13294B;
+  --navy-mid:    #1C3660;
+  --cream:       #FBF5EC;
+  --cream-mid:   #F0E6D4;
+  --cream-dark:  #EDE1CE;
+  --taupe:       #8A7B6A;
+  --line:        rgba(19,41,75,0.14);
+  --font-head:   'Poppins', 'Helvetica Neue', Arial, sans-serif;
+  --font-body:   'Roboto Mono', 'Courier New', monospace;
+  color-scheme: light;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #b5a897;
+  font-family: var(--font-body);
+  padding: 8mm 8px;
+}
+
+/* ─── PAGE SHELL ─── */
+.page {
+  width: 210mm;
+  min-height: 297mm;
+  max-width: 100%;
+  margin: 0 auto 10mm;
+  background: var(--cream);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 4px 32px rgba(0,0,0,0.25);
+  print-color-adjust: exact;
+  -webkit-print-color-adjust: exact;
+  display: flex;
+  flex-direction: column;
+}
+
+/* grid texture */
+.page::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    repeating-linear-gradient(180deg,transparent 0,transparent 9.8mm,rgba(237,225,206,0.5) 9.8mm,rgba(237,225,206,0.5) 10mm),
+    repeating-linear-gradient(90deg,transparent 0,transparent 9.8mm,rgba(237,225,206,0.35) 9.8mm,rgba(237,225,206,0.35) 10mm);
+  z-index: 0; pointer-events: none;
+}
+.page > * { position: relative; z-index: 1; }
+
+/* ─── HEADER ─── */
+.hdr {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 4mm; padding: 4.5mm 10mm;
+}
+.hdr-navy { background: var(--navy); }
+.hdr-red  { background: var(--red); }
+
+.hdr-pill {
+  font-family: var(--font-head); font-weight: 800; font-size: 9.5pt;
+  color: var(--navy); background: var(--amber);
+  padding: 1.5mm 5mm; white-space: nowrap;
+}
+.hdr-label {
+  font-size: 6pt; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(251,245,236,0.6); text-align: right;
+}
+
+/* ─── HERO ─── */
+.hero {
+  background: var(--amber); padding: 7mm 10mm 6mm;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ''; position: absolute; right: -6mm; top: -8mm;
+  width: 38mm; height: 55mm; background: var(--red);
+  transform: rotate(10deg); opacity: 0.22;
+}
+.hero::after {
+  content: ''; position: absolute; right: 14mm; top: -4mm;
+  width: 20mm; height: 40mm; background: var(--navy);
+  transform: rotate(10deg); opacity: 0.1;
+}
+.hero-kicker {
+  font-size: 6pt; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: rgba(19,41,75,0.55); margin-bottom: 2mm;
+}
+.hero h1 {
+  font-family: var(--font-head); font-size: 21pt; font-weight: 800;
+  line-height: 1.0; letter-spacing: -0.5px; color: var(--navy);
+}
+.hero-sub {
+  margin-top: 2mm; font-size: 7.5pt; font-weight: 600;
+  color: rgba(19,41,75,0.65);
+}
+
+/* ─── BODY ─── */
+.body {
+  padding: 5.5mm 10mm 6mm;
+  display: flex; flex-direction: column; gap: 5mm; flex: 1;
+}
+
+/* ─── CARD ─── */
+.card { overflow: hidden; border: 1.5px solid var(--cream-dark); }
+.card-amber { box-shadow: 3px 3px 0 var(--amber-deep); }
+.card-navy  { box-shadow: 3px 3px 0 var(--navy); }
+.card-red   { box-shadow: 3px 3px 0 var(--red-dark); }
+
+.card-hdr {
+  padding: 3mm 5.5mm; display: flex; align-items: center; gap: 3.5mm;
+}
+.card-hdr-amber     { background: var(--amber); }
+.card-hdr-navy      { background: var(--navy); }
+.card-hdr-red       { background: var(--red); }
+.card-hdr-amber-mid { background: var(--amber-deep); }
+
+.sec-num {
+  font-family: var(--font-head); font-size: 20pt; font-weight: 800;
+  line-height: 1; flex-shrink: 0;
+}
+.card-hdr-amber .sec-num, .card-hdr-amber-mid .sec-num { color: var(--navy); }
+.card-hdr-navy  .sec-num { color: var(--amber); }
+.card-hdr-red   .sec-num { color: rgba(255,255,255,0.95); }
+
+.sec-meta { display: flex; flex-direction: column; gap: 0.5mm; }
+.sec-eyebrow {
+  font-size: 5.5pt; font-weight: 700; letter-spacing: 1.5px; text-transform: uppercase;
+}
+.card-hdr-amber .sec-eyebrow, .card-hdr-amber-mid .sec-eyebrow { color: rgba(19,41,75,0.5); }
+.card-hdr-navy  .sec-eyebrow { color: rgba(255,170,66,0.7); }
+.card-hdr-red   .sec-eyebrow { color: rgba(255,255,255,0.55); }
+
+.sec-title {
+  font-family: var(--font-head); font-size: 10pt; font-weight: 800; line-height: 1.1;
+}
+.card-hdr-amber .sec-title, .card-hdr-amber-mid .sec-title { color: var(--navy); }
+.card-hdr-navy  .sec-title { color: var(--cream); }
+.card-hdr-red   .sec-title { color: #fff; }
+
+.card-body {
+  background: var(--cream); padding: 4mm 5.5mm 5mm;
+  display: flex; flex-direction: column; gap: 3.5mm;
+}
+
+/* ─── FILL FIELDS ─── */
+.prompt-label {
+  font-size: 5.8pt; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--taupe); margin-bottom: 1mm;
+}
+.mini-label {
+  font-size: 5.5pt; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase; color: var(--taupe);
+}
+
+/* Single-line fill field */
+.field-line {
+  display: block;
+  width: 100%;
+  min-height: 6.5mm;
+  border: none;
+  border-bottom: 1.5px solid var(--line);
+  background: transparent;
+  font-family: var(--font-body);
+  font-size: 7.5pt;
+  color: var(--navy);
+  padding: 1mm 1.5mm;
+  outline: none;
+  transition: border-color 0.15s, background 0.15s;
+  resize: none;
+  overflow: hidden;
+  line-height: 1.4;
+}
+.field-line:focus {
+  border-bottom-color: var(--amber);
+  background: rgba(255,170,66,0.07);
+}
+/* Two-line height variant */
+.field-2 { min-height: 13mm; }
+/* Three or four line notes */
+.field-notes {
+  min-height: 20mm;
+  border: 1.5px solid var(--line);
+  border-bottom: 1.5px solid var(--line);
+  padding: 2mm 2mm;
+}
+.field-notes-lg { min-height: 28mm; }
+
+/* Placeholder styling */
+.field-line:empty::before {
+  content: attr(data-placeholder);
+  color: rgba(138,123,106,0.5);
+  font-style: italic;
+  pointer-events: none;
+}
+
+/* ─── LAYOUT UTILITIES ─── */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 3.5mm; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; }
+
+/* ─── EVENT TABLE ─── */
+.ev-table { border: 1.5px solid var(--cream-dark); overflow: hidden; }
+
+.ev-row {
+  display: grid; grid-template-columns: 20mm 1fr 1fr;
+  border-bottom: 1.5px solid var(--cream-dark);
+}
+.ev-row:last-child { border-bottom: none; }
+
+.ev-num {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; padding: 3.5mm 2mm;
+  border-right: 1.5px solid var(--cream-dark);
+}
+.ev-row:nth-child(1) .ev-num { background: var(--navy); }
+.ev-row:nth-child(2) .ev-num { background: var(--amber); }
+.ev-row:nth-child(3) .ev-num { background: var(--navy); }
+
+.ev-n {
+  font-family: var(--font-head); font-size: 15pt; font-weight: 800;
+  line-height: 1; letter-spacing: -0.5px;
+}
+.ev-row:nth-child(1) .ev-n { color: var(--amber); }
+.ev-row:nth-child(2) .ev-n { color: var(--navy); }
+.ev-row:nth-child(3) .ev-n { color: var(--amber); }
+
+.ev-type {
+  font-size: 5pt; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; text-align: center; margin-top: 1mm;
+}
+.ev-row:nth-child(1) .ev-type,
+.ev-row:nth-child(3) .ev-type { color: rgba(255,170,66,0.55); }
+.ev-row:nth-child(2) .ev-type { color: rgba(19,41,75,0.5); }
+
+.ev-field {
+  padding: 2mm 3mm; display: flex; flex-direction: column; gap: 1mm;
+  border-right: 1px solid var(--cream-dark);
+}
+.ev-field:last-child { border-right: none; }
+
+.ev-fl {
+  font-size: 5.5pt; font-weight: 700; letter-spacing: 0.8px;
+  text-transform: uppercase; color: var(--taupe);
+}
+
+/* ─── INSIGHT ─── */
+.insight {
+  background: var(--navy); padding: 2.5mm 4.5mm;
+  font-size: 6.8pt; font-weight: 500;
+  color: rgba(251,245,236,0.85); line-height: 1.5; font-style: italic;
+}
+.insight b { color: var(--amber); font-style: normal; font-weight: 700; }
+
+/* ─── ANCHOR SLOTS ─── */
+.anchor-slot { border: 1.5px solid var(--cream-dark); overflow: hidden; }
+
+.anchor-hdr {
+  padding: 2mm 3.5mm; display: flex; align-items: center; gap: 2mm;
+}
+.anchor-slot:nth-child(1) .anchor-hdr { background: var(--amber); }
+.anchor-slot:nth-child(2) .anchor-hdr { background: var(--navy); }
+.anchor-slot:nth-child(3) .anchor-hdr { background: var(--amber); }
+
+.anchor-letter {
+  font-family: var(--font-head); font-size: 14pt; font-weight: 800; line-height: 1;
+}
+.anchor-slot:nth-child(1) .anchor-letter,
+.anchor-slot:nth-child(3) .anchor-letter { color: var(--navy); }
+.anchor-slot:nth-child(2) .anchor-letter { color: var(--amber); }
+
+.anchor-word { font-family: var(--font-head); font-size: 7pt; font-weight: 700; }
+.anchor-slot:nth-child(1) .anchor-word,
+.anchor-slot:nth-child(3) .anchor-word { color: var(--navy); }
+.anchor-slot:nth-child(2) .anchor-word { color: var(--cream); }
+
+.anchor-body {
+  background: var(--cream); padding: 3mm 3.5mm;
+  display: flex; flex-direction: column; gap: 2.5mm;
+}
+
+/* ─── METRICS ─── */
+.metric { border: 1.5px solid var(--cream-dark); overflow: hidden; }
+
+.metric-hdr {
+  padding: 3mm 4mm; display: flex; flex-direction: column; gap: 1mm;
+}
+.metric:nth-child(1) .metric-hdr,
+.metric:nth-child(2) .metric-hdr { background: var(--amber); }
+.metric:nth-child(3) .metric-hdr   { background: var(--navy); }
+
+.metric-n {
+  font-family: var(--font-head); font-size: 16pt; font-weight: 800; line-height: 1;
+}
+.metric:nth-child(1) .metric-n,
+.metric:nth-child(2) .metric-n { color: var(--navy); }
+.metric:nth-child(3) .metric-n   { color: var(--amber); }
+
+.metric-name { font-family: var(--font-head); font-size: 7.5pt; font-weight: 800; }
+.metric:nth-child(1) .metric-name,
+.metric:nth-child(2) .metric-name { color: var(--navy); }
+.metric:nth-child(3) .metric-name   { color: var(--cream); }
+
+.metric-bench {
+  display: inline-block; padding: 1mm 2.5mm;
+  font-size: 5.5pt; font-weight: 700; letter-spacing: 0.5px;
+  text-transform: uppercase; margin-top: 1mm;
+}
+.metric:nth-child(1) .metric-bench,
+.metric:nth-child(2) .metric-bench { background: var(--navy); color: var(--amber); }
+.metric:nth-child(3) .metric-bench   { background: var(--amber); color: var(--navy); }
+
+.metric-body {
+  background: var(--cream); padding: 3mm 4mm;
+  display: flex; flex-direction: column; gap: 2mm;
+}
+
+/* ─── THIS WEEK ─── */
+.this-week {
+  background: var(--navy); padding: 4mm 5.5mm 5mm;
+  box-shadow: 3px 3px 0 var(--amber);
+}
+.tw-label {
+  font-size: 6.5pt; font-weight: 700; letter-spacing: 2px;
+  text-transform: uppercase; color: var(--amber); margin-bottom: 3mm;
+}
+.tw-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 3mm; }
+.tw-item { display: flex; align-items: flex-start; gap: 2.5mm; }
+
+/* Interactive checkbox */
+.tw-box {
+  appearance: none; -webkit-appearance: none;
+  width: 4mm; height: 4mm; min-width: 4mm;
+  border: 1.5px solid var(--amber);
+  background: transparent; cursor: pointer;
+  margin-top: 1mm; position: relative;
+  transition: background 0.15s;
+}
+.tw-box:checked { background: var(--amber); }
+.tw-box:checked::after {
+  content: '✓'; position: absolute;
+  top: -1px; left: 0.5px;
+  font-size: 5pt; font-weight: 900;
+  color: var(--navy); line-height: 1;
+}
+
+.tw-text {
+  font-size: 7pt; font-weight: 500;
+  color: rgba(251,245,236,0.88); line-height: 1.45;
+}
+
+/* ─── NOTES ─── */
+.notes-strip { padding: 2mm 0 0; }
+.notes-label {
+  font-size: 5.5pt; font-weight: 700; letter-spacing: 1.5px;
+  text-transform: uppercase; color: var(--taupe);
+  padding-bottom: 1mm; border-bottom: 1.5px solid var(--cream-dark);
+  margin-bottom: 1.5mm; display: block;
+}
+
+/* ─── FOOTER ─── */
+.footer {
+  background: var(--amber); padding: 3mm 10mm;
+  display: flex; align-items: center; justify-content: space-between;
+  margin-top: auto;
+}
+.footer-handle { font-family: var(--font-head); font-size: 8pt; font-weight: 800; color: var(--navy); }
+.footer-event {
+  font-size: 6pt; font-weight: 600; letter-spacing: 1.5px;
+  text-transform: uppercase; color: rgba(19,41,75,0.6);
+}
+
+/* ─── FLOATING PDF BUTTON ─── */
+.pdf-btn {
+  position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  background: var(--navy); color: var(--amber);
+  font-family: var(--font-head); font-weight: 800; font-size: 9pt;
+  border: none; cursor: pointer;
+  padding: 10px 22px;
+  box-shadow: 5px 5px 0 var(--amber);
+  letter-spacing: 0.3px;
+  transition: background 0.15s, color 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+.pdf-btn:hover {
+  background: var(--amber); color: var(--navy);
+  box-shadow: 5px 5px 0 var(--navy);
+}
+.pdf-btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 3px 3px 0 var(--navy);
+}
+.pdf-btn.generating {
+  opacity: 0.75; cursor: wait;
+  background: var(--amber-deep); color: var(--navy);
+}
+
+/* ─── AUTO-SAVE TOAST ─── */
+.toast {
+  position: fixed; bottom: 80px; right: 28px; z-index: 999;
+  background: var(--navy); color: var(--amber);
+  font-family: var(--font-body); font-size: 7pt; font-weight: 600;
+  padding: 6px 14px;
+  opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* ─── PRINT ─── */
+@page { size: A4; margin: 0; }
+@media print {
+  body { background: white; padding: 0; }
+  .page { margin: 0; box-shadow: none; width: 100%; }
+  .page-break { page-break-after: always; break-after: page; }
+  .pdf-btn, .toast { display: none !important; }
+}
+.page-break { page-break-after: always; break-after: page; }
+</style>
+</head>
+<body>
+
+<!-- ══════════════ PAGE 1 ══════════════ -->
+<div class="page" id="page1">
+
+  <header class="hdr hdr-navy">
+    <span class="hdr-pill">@Geektutor</span>
+    <span class="hdr-label">Community Launch Workbook &nbsp;·&nbsp; Blockfest Africa 2026 &nbsp;·&nbsp; Page 1 of 2</span>
+  </header>
+
+  <div class="hero">
+    <p class="hero-kicker">Workshop Workbook &nbsp;·&nbsp; October 2026</p>
+    <h1>Launch Your Blockchain<br>Developer Community</h1>
+    <p class="hero-sub">From Chapter Zero to 100 Active Members &nbsp;·&nbsp; Fill this in as we go — you leave with a real plan.</p>
+  </div>
+
+  <div class="body">
+
+    <!-- Section 01 -->
+    <div class="card card-amber">
+      <div class="card-hdr card-hdr-amber">
+        <span class="sec-num">01</span>
+        <div class="sec-meta">
+          <span class="sec-eyebrow">Section 01 of 04 &nbsp;·&nbsp; ~5 min</span>
+          <span class="sec-title">Who Are You Building For?</span>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="grid-2">
+          <div>
+            <p class="prompt-label">→ Who is the one person you most want on day one?</p>
+            <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="s1-who" data-placeholder="Write here…"></div>
+          </div>
+          <div>
+            <p class="prompt-label">→ Where do they currently go for help?</p>
+            <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="s1-where" data-placeholder="Write here…"></div>
+          </div>
+        </div>
+
+        <div>
+          <p class="prompt-label">→ What's the one thing they're trying to learn or solve right now?</p>
+          <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="s1-solve" data-placeholder="Write here…"></div>
+        </div>
+
+        <div class="insight">
+          <b>Key insight:</b> Your community is the network your member doesn't have yet. Don't build for "everyone" — build for this one person first, then let others self-select in.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section 02 -->
+    <div class="card card-navy">
+      <div class="card-hdr card-hdr-navy">
+        <span class="sec-num">02</span>
+        <div class="sec-meta">
+          <span class="sec-eyebrow">Section 02 of 04 &nbsp;·&nbsp; ~7 min</span>
+          <span class="sec-title">Your First Three Events</span>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="ev-table">
+          <div class="ev-row">
+            <div class="ev-num">
+              <span class="ev-n">01</span>
+              <span class="ev-type">Gathering</span>
+            </div>
+            <div class="ev-field">
+              <span class="ev-fl">What &amp; When &nbsp;(low-stakes · 10–20 people)</span>
+              <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="ev1-what" data-placeholder="e.g. Tech coffee chat, Nov 2…"></div>
+            </div>
+            <div class="ev-field">
+              <span class="ev-fl">Format &amp; Location</span>
+              <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="ev1-format" data-placeholder="e.g. Informal, Café One…"></div>
+            </div>
+          </div>
+          <div class="ev-row">
+            <div class="ev-num">
+              <span class="ev-n">02</span>
+              <span class="ev-type">Workshop</span>
+            </div>
+            <div class="ev-field">
+              <span class="ev-fl">Topic &nbsp;(what will they build or write?)</span>
+              <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="ev2-topic" data-placeholder="e.g. Deploy your first smart contract…"></div>
+            </div>
+            <div class="ev-field">
+              <span class="ev-fl">Date target &amp; who teaches</span>
+              <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="ev2-date" data-placeholder="e.g. Dec 7, you + Tunde…"></div>
+            </div>
+          </div>
+          <div class="ev-row">
+            <div class="ev-num">
+              <span class="ev-n">03</span>
+              <span class="ev-type">Demo Day</span>
+            </div>
+            <div class="ev-field">
+              <span class="ev-fl">Who in your network gives the first 10-min talk?</span>
+              <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="ev3-who" data-placeholder="e.g. Amaka from Helipad…"></div>
+            </div>
+            <div class="ev-field">
+              <span class="ev-fl">Audience size goal</span>
+              <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="ev3-goal" data-placeholder="e.g. 40 people…"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight">
+          <b>Rule:</b> Event 01 should be fillable from one group chat. If it feels too big, it is. Start smaller — you can always run it again.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="notes-strip">
+      <span class="notes-label">Notes</span>
+      <div class="field-line field-notes" contenteditable="true" spellcheck="false" data-field="p1-notes" data-placeholder="Your notes from this section…"></div>
+    </div>
+
+  </div><!-- /body -->
+
+  <footer class="footer">
+    <span class="footer-handle">@Geektutor</span>
+    <span class="footer-event">Blockfest Africa &nbsp;·&nbsp; 2026</span>
+  </footer>
+
+</div>
+<div class="page-break"></div>
+
+<!-- ══════════════ PAGE 2 ══════════════ -->
+<div class="page" id="page2">
+
+  <header class="hdr hdr-red">
+    <span class="hdr-pill">@Geektutor</span>
+    <span class="hdr-label">Community Launch Workbook &nbsp;·&nbsp; Blockfest Africa 2026 &nbsp;·&nbsp; Page 2 of 2</span>
+  </header>
+
+  <div class="body">
+
+    <!-- Section 03 -->
+    <div class="card card-red">
+      <div class="card-hdr card-hdr-red">
+        <span class="sec-num">03</span>
+        <div class="sec-meta">
+          <span class="sec-eyebrow">Section 03 of 04 &nbsp;·&nbsp; ~5 min</span>
+          <span class="sec-title">Find Your Anchors</span>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <p style="font-size:6.8pt;color:var(--taupe);font-style:italic;margin-bottom:1mm;">Name 3 people who'd show up even when it's inconvenient — not the most impressive, the most reliable.</p>
+
+        <div class="grid-3">
+          <div class="anchor-slot">
+            <div class="anchor-hdr">
+              <span class="anchor-letter">A</span>
+              <span class="anchor-word">Anchor One</span>
+            </div>
+            <div class="anchor-body">
+              <div>
+                <p class="mini-label">Name / Role</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="a1-name" data-placeholder="Name…"></div>
+              </div>
+              <div>
+                <p class="mini-label">Why reliable?</p>
+                <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="a1-why" data-placeholder="What makes them your anchor?"></div>
+              </div>
+              <div>
+                <p class="mini-label">First ask before Event 01</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="a1-ask" data-placeholder="What will you ask them?"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="anchor-slot">
+            <div class="anchor-hdr">
+              <span class="anchor-letter">B</span>
+              <span class="anchor-word">Anchor Two</span>
+            </div>
+            <div class="anchor-body">
+              <div>
+                <p class="mini-label">Name / Role</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="a2-name" data-placeholder="Name…"></div>
+              </div>
+              <div>
+                <p class="mini-label">Why reliable?</p>
+                <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="a2-why" data-placeholder="What makes them your anchor?"></div>
+              </div>
+              <div>
+                <p class="mini-label">First ask before Event 01</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="a2-ask" data-placeholder="What will you ask them?"></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="anchor-slot">
+            <div class="anchor-hdr">
+              <span class="anchor-letter">C</span>
+              <span class="anchor-word">Anchor Three</span>
+            </div>
+            <div class="anchor-body">
+              <div>
+                <p class="mini-label">Name / Role</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="a3-name" data-placeholder="Name…"></div>
+              </div>
+              <div>
+                <p class="mini-label">Why reliable?</p>
+                <div class="field-line field-2" contenteditable="true" spellcheck="false" data-field="a3-why" data-placeholder="What makes them your anchor?"></div>
+              </div>
+              <div>
+                <p class="mini-label">First ask before Event 01</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="a3-ask" data-placeholder="What will you ask them?"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight">
+          <b>Rule:</b> Treat anchors like co-owners, not volunteers. They should know your chapter goals, not just the next event date.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- Section 04 -->
+    <div class="card card-amber">
+      <div class="card-hdr card-hdr-amber-mid">
+        <span class="sec-num">04</span>
+        <div class="sec-meta">
+          <span class="sec-eyebrow">Section 04 of 04 &nbsp;·&nbsp; ~5 min</span>
+          <span class="sec-title">Your 90-Day Targets</span>
+        </div>
+      </div>
+      <div class="card-body">
+
+        <div class="grid-3">
+          <div class="metric">
+            <div class="metric-hdr">
+              <span class="metric-n">01</span>
+              <span class="metric-name">Return Rate</span>
+              <span class="metric-bench">Target: ≥ 30% by Event 3</span>
+            </div>
+            <div class="metric-body">
+              <div>
+                <p class="mini-label">My 90-day target</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="m1-target" data-placeholder="e.g. 35%"></div>
+              </div>
+              <div>
+                <p class="mini-label">How I'll track it</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="m1-track" data-placeholder="e.g. Attendance sheet"></div>
+              </div>
+            </div>
+          </div>
+          <div class="metric">
+            <div class="metric-hdr">
+              <span class="metric-n">02</span>
+              <span class="metric-name">Organic Invites</span>
+              <span class="metric-bench">Target: ≥ 3 per event</span>
+            </div>
+            <div class="metric-body">
+              <div>
+                <p class="mini-label">My 90-day target</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="m2-target" data-placeholder="e.g. 5 per event"></div>
+              </div>
+              <div>
+                <p class="mini-label">How I'll track it</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="m2-track" data-placeholder="e.g. RSVP source field"></div>
+              </div>
+            </div>
+          </div>
+          <div class="metric">
+            <div class="metric-hdr">
+              <span class="metric-n">03</span>
+              <span class="metric-name">Contributor Rate</span>
+              <span class="metric-bench">Target: ≥ 2 per event</span>
+            </div>
+            <div class="metric-body">
+              <div>
+                <p class="mini-label">My 90-day target</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="m3-target" data-placeholder="e.g. 3 per event"></div>
+              </div>
+              <div>
+                <p class="mini-label">How I'll track it</p>
+                <div class="field-line" contenteditable="true" spellcheck="false" data-field="m3-track" data-placeholder="e.g. Role sign-up form"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="insight">
+          <b>Remember:</b> Event headcount is vanity. Return rate is sanity. These three numbers tell you if your community is actually alive.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- This Week -->
+    <div class="this-week">
+      <p class="tw-label">☑ Do These This Week</p>
+      <div class="tw-grid">
+        <div class="tw-item">
+          <input type="checkbox" class="tw-box" data-field="tw1" id="tw1">
+          <label class="tw-text" for="tw1">Text your first anchor. Set a call before Friday.</label>
+        </div>
+        <div class="tw-item">
+          <input type="checkbox" class="tw-box" data-field="tw2" id="tw2">
+          <label class="tw-text" for="tw2">Book the venue for Event 01. Even a coffee shop counts.</label>
+        </div>
+        <div class="tw-item">
+          <input type="checkbox" class="tw-box" data-field="tw3" id="tw3">
+          <label class="tw-text" for="tw3">Post one thing publicly about what you're building.</label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="notes-strip">
+      <span class="notes-label">Notes &amp; Reflections</span>
+      <div class="field-line field-notes field-notes-lg" contenteditable="true" spellcheck="false" data-field="p2-notes" data-placeholder="Your notes, ideas, commitments…"></div>
+    </div>
+
+  </div><!-- /body -->
+
+  <footer class="footer">
+    <span class="footer-handle">@Geektutor</span>
+    <span class="footer-event">Blockfest Africa &nbsp;·&nbsp; 2026</span>
+  </footer>
+
+</div>
+
+<!-- Floating button -->
+<button class="pdf-btn" id="pdfBtn">↓ Download PDF</button>
+<div class="toast" id="toast">Saved</div>
+
+<script>
+// ─── AUTO-SAVE TO LOCALSTORAGE ───────────────────────
+const STORAGE_KEY = 'blockfest_wb_2026';
+
+function getAllFields() {
+  return document.querySelectorAll('[data-field][contenteditable]');
+}
+function getAllCheckboxes() {
+  return document.querySelectorAll('input[type="checkbox"][data-field]');
+}
+
+function save() {
+  try {
+    const data = {};
+    getAllFields().forEach(el => { data[el.dataset.field] = el.innerHTML; });
+    getAllCheckboxes().forEach(cb => { data[cb.dataset.field] = cb.checked; });
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    showToast();
+  } catch(e) {}
+}
+
+function load() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return;
+    const data = JSON.parse(raw);
+    getAllFields().forEach(el => {
+      if (data[el.dataset.field] !== undefined) el.innerHTML = data[el.dataset.field];
+    });
+    getAllCheckboxes().forEach(cb => {
+      if (data[cb.dataset.field] !== undefined) cb.checked = data[cb.dataset.field];
+    });
+  } catch(e) {}
+}
+
+let toastTimer;
+function showToast() {
+  const t = document.getElementById('toast');
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 1600);
+}
+
+// Debounced save
+let saveTimer;
+function debouncedSave() {
+  clearTimeout(saveTimer);
+  saveTimer = setTimeout(save, 600);
+}
+
+document.addEventListener('input', debouncedSave);
+document.addEventListener('change', debouncedSave);
+
+// Load on ready
+document.addEventListener('DOMContentLoaded', load);
+
+// ─── PDF DOWNLOAD ────────────────────────────────────
+document.getElementById('pdfBtn').addEventListener('click', async function() {
+  const btn = this;
+  btn.textContent = 'Generating PDF…';
+  btn.classList.add('generating');
+  btn.disabled = true;
+
+  // Hide button during capture
+  btn.style.display = 'none';
+  document.getElementById('toast').style.display = 'none';
+
+  try {
+    await document.fonts.ready;
+    const { jsPDF } = window.jspdf;
+    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
+
+    const pages = [document.getElementById('page1'), document.getElementById('page2')];
+
+    for (let i = 0; i < pages.length; i++) {
+      const canvas = await html2canvas(pages[i], {
+        scale: 2.5,
+        useCORS: true,
+        allowTaint: false,
+        backgroundColor: '#FBF5EC',
+        logging: false,
+        windowWidth: pages[i].scrollWidth,
+        windowHeight: pages[i].scrollHeight,
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.94);
+      if (i > 0) pdf.addPage();
+      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
+    }
+
+    // Name the PDF with today's date
+    const today = new Date().toISOString().slice(0, 10);
+    pdf.save('community-launch-workbook-' + today + '.pdf');
+
+  } catch(err) {
+    console.error('PDF error:', err);
+    alert('PDF generation failed. Use Ctrl+P / Cmd+P and choose "Save as PDF" instead.');
+  } finally {
+    btn.style.display = '';
+    document.getElementById('toast').style.display = '';
+    btn.textContent = '↓ Download PDF';
+    btn.classList.remove('generating');
+    btn.disabled = false;
+  }
+});
+</script>
+</body>
+</html>
