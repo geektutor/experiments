@@ -5,8 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Community Launch Workbook — Blockfest Africa 2026</title>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Roboto+Mono:ital,wght@0,400;0,500;0,600;0,700;1,500&display=swap" rel="stylesheet">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <style>
 /* ── Brand palette ── */
 :root {
@@ -384,8 +382,11 @@ body {
 }
 
 /* ─── FLOATING PDF BUTTON ─── */
-.pdf-btn {
+.pdf-wrap {
   position: fixed; bottom: 28px; right: 28px; z-index: 999;
+  display: flex; flex-direction: column; align-items: flex-end; gap: 5px;
+}
+.pdf-btn {
   background: var(--navy); color: var(--amber);
   font-family: var(--font-head); font-weight: 800; font-size: 9pt;
   border: none; cursor: pointer;
@@ -402,9 +403,11 @@ body {
   transform: translate(2px, 2px);
   box-shadow: 3px 3px 0 var(--navy);
 }
-.pdf-btn.generating {
-  opacity: 0.75; cursor: wait;
-  background: var(--amber-deep); color: var(--navy);
+.pdf-hint {
+  font-family: var(--font-body); font-size: 6pt; font-weight: 600;
+  color: rgba(19,41,75,0.55); letter-spacing: 0.3px;
+  background: rgba(251,245,236,0.85);
+  padding: 2px 8px;
 }
 
 /* ─── AUTO-SAVE TOAST ─── */
@@ -424,7 +427,9 @@ body {
   body { background: white; padding: 0; }
   .page { margin: 0; box-shadow: none; width: 100%; }
   .page-break { page-break-after: always; break-after: page; }
-  .pdf-btn, .toast { display: none !important; }
+  .pdf-wrap, .toast { display: none !important; }
+  /* Ensure contenteditable content prints */
+  [contenteditable] { border-bottom-color: rgba(19,41,75,0.2) !important; }
 }
 .page-break { page-break-after: always; break-after: page; }
 </style>
@@ -762,7 +767,10 @@ body {
 </div>
 
 <!-- Floating button -->
-<button class="pdf-btn" id="pdfBtn">↓ Download PDF</button>
+<div class="pdf-wrap">
+  <div class="pdf-hint">In print dialog → choose "Save as PDF"</div>
+  <button class="pdf-btn" id="pdfBtn">⎙ Save as PDF</button>
+</div>
 <div class="toast" id="toast">Saved</div>
 
 <script>
@@ -821,54 +829,9 @@ document.addEventListener('change', debouncedSave);
 // Load on ready
 document.addEventListener('DOMContentLoaded', load);
 
-// ─── PDF DOWNLOAD ────────────────────────────────────
-document.getElementById('pdfBtn').addEventListener('click', async function() {
-  const btn = this;
-  btn.textContent = 'Generating PDF…';
-  btn.classList.add('generating');
-  btn.disabled = true;
-
-  // Hide button during capture
-  btn.style.display = 'none';
-  document.getElementById('toast').style.display = 'none';
-
-  try {
-    await document.fonts.ready;
-    const { jsPDF } = window.jspdf;
-    const pdf = new jsPDF({ unit: 'mm', format: 'a4', orientation: 'portrait' });
-
-    const pages = [document.getElementById('page1'), document.getElementById('page2')];
-
-    for (let i = 0; i < pages.length; i++) {
-      const canvas = await html2canvas(pages[i], {
-        scale: 2.5,
-        useCORS: true,
-        allowTaint: false,
-        backgroundColor: '#FBF5EC',
-        logging: false,
-        windowWidth: pages[i].scrollWidth,
-        windowHeight: pages[i].scrollHeight,
-      });
-
-      const imgData = canvas.toDataURL('image/jpeg', 0.94);
-      if (i > 0) pdf.addPage();
-      pdf.addImage(imgData, 'JPEG', 0, 0, 210, 297);
-    }
-
-    // Name the PDF with today's date
-    const today = new Date().toISOString().slice(0, 10);
-    pdf.save('community-launch-workbook-' + today + '.pdf');
-
-  } catch(err) {
-    console.error('PDF error:', err);
-    alert('PDF generation failed. Use Ctrl+P / Cmd+P and choose "Save as PDF" instead.');
-  } finally {
-    btn.style.display = '';
-    document.getElementById('toast').style.display = '';
-    btn.textContent = '↓ Download PDF';
-    btn.classList.remove('generating');
-    btn.disabled = false;
-  }
+// ─── PRINT / SAVE AS PDF ────────────────────────────
+document.getElementById('pdfBtn').addEventListener('click', function() {
+  window.print();
 });
 </script>
 </body>
